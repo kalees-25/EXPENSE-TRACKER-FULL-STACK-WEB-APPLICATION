@@ -1,67 +1,340 @@
-<div class="dashboard">
-  <!-- Page Header -->
-  <header class="page-header">
-    <h1>Dashboard</h1>
-    <p>Overview of your expenses and spending patterns</p>
-  </header>
+<!-- ============================================
+     ENTERPRISE EXPENSE MANAGER - Dashboard
+     ============================================ -->
 
-  <!-- Summary Statistics -->
-  <div class="summary">
-    <div class="stat-card success">
-      <h3>Total Expenses</h3>
-      <p class="stat-value">{{ totalExpense }}</p>
-    </div>
-
-    <div class="stat-card">
-      <h3>Recent Entries</h3>
-      <p class="stat-value">{{ recentExpenses.length }}</p>
-      <p class="stat-subtext">entries tracked</p>
-    </div>
-  </div>
-
-  <!-- Recent Expenses Table -->
-  <section class="section">
-    <h3>Recent Expenses</h3>
-
-    <div class="table-wrapper" *ngIf="recentExpenses.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let exp of recentExpenses">
-            <td>{{ exp.date }}</td>
-            <td>
-              <span class="badge primary">{{ exp.category }}</span>
-            </td>
-            <td>{{ exp.description }}</td>
-            <td>
-              <strong>{{ exp.amount | currency }}</strong>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="empty-state" *ngIf="recentExpenses.length === 0">
-      <p>📊 No expenses yet. Start by adding your first expense!</p>
-    </div>
-  </section>
-
-  <!-- Category Breakdown -->
-  <section class="section">
-    <h3>Category Breakdown</h3>
-
-    <div class="category-list">
-      <div class="category-card" *ngFor="let item of categoryTotals | keyvalue">
-        <span>{{ item.key }}</span>
-        <strong>{{ item.value | currency }}</strong>
+<div class="dashboard-layout">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+      <div class="logo-text">
+        <h1>Enterprise Expense</h1>
+        <p>Manager</p>
       </div>
     </div>
-  </section>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/expenses" routerLinkActive="active" class="nav-item">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Expenses</span>
+      </a>
+      <a routerLink="/expenses/add" routerLinkActive="active" class="nav-item">
+        <mat-icon>add_circle</mat-icon>
+        <span>Add Expense</span>
+      </a>
+      <a routerLink="/categories" routerLinkActive="active" class="nav-item">
+        <mat-icon>category</mat-icon>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </a>
+
+      <div class="nav-spacer"></div>
+
+      <a (click)="logout()" class="nav-item logout-item">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- HEADER -->
+    <header class="top-header">
+      <div class="search-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" class="search-input" placeholder="Search expenses or categories..." />
+      </div>
+
+      <div class="header-actions">
+        <button mat-icon-button class="notification-btn">
+          <mat-icon>notifications</mat-icon>
+          <span class="notification-badge"></span>
+        </button>
+
+        <div class="header-divider"></div>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <p class="user-name">User</p>
+            <p class="user-role">Enterprise User</p>
+          </div>
+          <div class="user-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="dashboard-content">
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-title-section">
+          <h2 class="page-title">Financial Overview</h2>
+          <p class="page-subtitle">Real-time spend analytics and budget tracking.</p>
+        </div>
+        <div class="page-actions">
+          <button mat-stroked-button class="action-btn">
+            <mat-icon>calendar_today</mat-icon>
+            <span>Last 30 Days</span>
+          </button>
+          <button mat-stroked-button class="action-btn">
+            <mat-icon>file_download</mat-icon>
+            <span>Export</span>
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="add-expense-btn"
+            routerLink="/expenses/add"
+          >
+            <mat-icon>add</mat-icon>
+            <span>Add Expense</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD DATA -->
+      <ng-container *ngIf="vm$ | async as vm; else loadingState">
+        <!-- KPI METRICS GRID -->
+        <section class="metrics-grid">
+          <!-- Total Expense -->
+          <div class="metric-card">
+            <span class="metric-label">TOTAL EXPENSE</span>
+            <h3 class="metric-value">
+              {{ vm.totalExpense | currency: 'INR' : 'symbol' : '1.2-2' }}
+            </h3>
+          </div>
+
+          <!-- Expense Count -->
+          <div class="metric-card">
+            <span class="metric-label">EXPENSE COUNT</span>
+            <h3 class="metric-value">{{ vm.expenseCount | number }}</h3>
+          </div>
+
+          <!-- Top Category -->
+          <div class="metric-card">
+            <span class="metric-label">TOP CATEGORY</span>
+            <h3 class="metric-value text-truncate">{{ vm.topCategory }}</h3>
+          </div>
+
+          <!-- Highest Expense -->
+          <div class="metric-card">
+            <span class="metric-label">HIGHEST EXPENSE</span>
+            <h3 class="metric-value-sm">
+              {{ vm.topCategoryAmount | currency: 'INR' : 'symbol' : '1.2-2' }}
+            </h3>
+            <p class="metric-subtext">{{ vm.topCategory }}</p>
+          </div>
+
+          <!-- Current Month Total -->
+          <div class="metric-card">
+            <span class="metric-label">CURRENT MONTH TOTAL</span>
+            <h3 class="metric-value">
+              {{ vm.thisMonthTotal | currency: 'INR' : 'symbol' : '1.2-2' }}
+            </h3>
+          </div>
+
+          <!-- Monthly Growth -->
+          <div class="metric-card">
+            <span class="metric-label">MONTHLY GROWTH</span>
+            <div
+              class="growth-indicator"
+              [class.positive]="vm.monthChangePercent >= 0"
+              [class.negative]="vm.monthChangePercent < 0"
+            >
+              <h3 class="metric-value">
+                {{ vm.monthChangePercent >= 0 ? '+' : ''
+                }}{{ vm.monthChangePercent | number: '1.1-1' }}%
+              </h3>
+              <mat-icon>{{
+                vm.monthChangePercent >= 0 ? 'trending_up' : 'trending_down'
+              }}</mat-icon>
+            </div>
+          </div>
+        </section>
+
+        <!-- MAIN GRID: Category Breakdown + Recent Expenses -->
+        <div class="main-grid">
+          <!-- CATEGORY BREAKDOWN -->
+          <section class="category-section">
+            <!-- Category Breakdown Card -->
+            <div class="section-card">
+              <h3 class="section-title">Category Breakdown</h3>
+
+              <ng-container
+                *ngIf="
+                  vm.categoryTotals && (vm.categoryTotals | keyvalue).length > 0;
+                  else noCategoriesState
+                "
+              >
+                <div class="category-list">
+                  <div
+                    class="category-item"
+                    *ngFor="
+                      let category of vm.categoryTotals | keyvalue;
+                      let i = index;
+                      trackBy: trackByCategory
+                    "
+                  >
+                    <div class="category-info">
+                      <span class="category-name">{{ category.key }}</span>
+                      <span class="category-amount">{{
+                        category.value | currency: 'INR' : 'symbol' : '1.0-0'
+                      }}</span>
+                    </div>
+                    <div class="category-bar">
+                      <div
+                        class="category-bar-fill"
+                        [style.width.%]="
+                          vm.totalExpense > 0 ? (category.value / vm.totalExpense) * 100 : 0
+                        "
+                        [class]="'bar-color-' + (i % 4)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-template #noCategoriesState>
+                <div class="empty-category-state">
+                  <mat-icon>pie_chart_outline</mat-icon>
+                  <p>No category data available</p>
+                </div>
+              </ng-template>
+
+              <button mat-button class="view-report-btn">View Detailed Report</button>
+            </div>
+
+            <!-- Monthly Summary Card -->
+            <div class="section-card">
+              <h3 class="section-title">Monthly Summary</h3>
+              <div class="monthly-summary">
+                <div class="summary-row">
+                  <span class="summary-label">This Month</span>
+                  <span class="summary-value">{{
+                    vm.thisMonthTotal | currency: 'INR' : 'symbol' : '1.0-0'
+                  }}</span>
+                </div>
+                <div class="summary-row">
+                  <span class="summary-label">Last Month</span>
+                  <span class="summary-value">{{
+                    vm.lastMonthTotal | currency: 'INR' : 'symbol' : '1.0-0'
+                  }}</span>
+                </div>
+                <div class="summary-row highlight">
+                  <span class="summary-label">Difference</span>
+                  <span
+                    class="summary-value"
+                    [class.positive]="vm.thisMonthTotal <= vm.lastMonthTotal"
+                    [class.negative]="vm.thisMonthTotal > vm.lastMonthTotal"
+                  >
+                    {{
+                      vm.thisMonthTotal - vm.lastMonthTotal | currency: 'INR' : 'symbol' : '1.0-0'
+                    }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- RECENT EXPENSES TABLE -->
+          <section class="expenses-section">
+            <div class="section-card table-card">
+              <div class="table-header">
+                <h3 class="section-title">Recent Expenses</h3>
+                <a routerLink="/expenses" class="view-all-link">View All</a>
+              </div>
+
+              <ng-container
+                *ngIf="vm.recentExpenses && vm.recentExpenses.length > 0; else emptyState"
+              >
+                <div class="table-wrapper">
+                  <table class="expenses-table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th class="text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let expense of vm.recentExpenses; trackBy: trackByExpenseId">
+                        <td class="expense-description">{{ expense.description }}</td>
+                        <td class="expense-category">
+                          <span class="category-chip">{{
+                            expense.category || 'Uncategorized'
+                          }}</span>
+                        </td>
+                        <td class="expense-date">{{ expense.date | date: 'MMM d, yyyy' }}</td>
+                        <td class="expense-amount text-right">
+                          {{ expense.amount | currency: 'INR' : 'symbol' : '1.2-2' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </ng-container>
+
+              <!-- EMPTY STATE -->
+              <ng-template #emptyState>
+                <div class="empty-state">
+                  <div class="empty-state-icon">
+                    <mat-icon>receipt_long</mat-icon>
+                  </div>
+                  <h4 class="empty-state-title">No expenses yet</h4>
+                  <p class="empty-state-text">Start tracking your expenses to see them here.</p>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    routerLink="/expenses/add"
+                    class="empty-state-btn"
+                  >
+                    <mat-icon>add</mat-icon>
+                    Add Your First Expense
+                  </button>
+                </div>
+              </ng-template>
+            </div>
+          </section>
+        </div>
+      </ng-container>
+
+      <!-- LOADING STATE -->
+      <ng-template #loadingState>
+        <section class="metrics-grid">
+          <div class="metric-card skeleton" *ngFor="let i of [1, 2, 3, 4, 5, 6]">
+            <div class="skeleton-label"></div>
+            <div class="skeleton-value"></div>
+          </div>
+        </section>
+
+        <div class="main-grid">
+          <section class="category-section">
+            <div class="section-card skeleton-card">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-bar" *ngFor="let i of [1, 2, 3, 4]"></div>
+            </div>
+          </section>
+          <section class="expenses-section">
+            <div class="section-card skeleton-card">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-row" *ngFor="let i of [1, 2, 3, 4, 5]"></div>
+            </div>
+          </section>
+        </div>
+      </ng-template>
+    </div>
+  </main>
 </div>

@@ -1,73 +1,280 @@
-<div class="expense-list">
-  <!-- Page Header -->
-  <header class="page-header">
-    <h1>Expenses</h1>
-    <p>View, filter, and manage all your expenses</p>
-  </header>
+<!-- ============================================
+     ENTERPRISE EXPENSE MANAGER - Expense List
+     ============================================ -->
 
-  <!-- Filters Section -->
-  <div class="filters">
-    <div class="filter-group">
-      <label for="category-filter">Category</label>
-      <select id="category-filter" [(ngModel)]="selectedCategory" (change)="applyFilters()">
-        <option value="">All Categories</option>
-        <option value="Food">Food</option>
-        <option value="Travel">Travel</option>
-        <option value="Rent">Rent</option>
-      </select>
+<div class="expense-list-layout">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+      <div class="logo-text">
+        <h1>Enterprise Expense</h1>
+        <p>Manager</p>
+      </div>
     </div>
 
-    <div class="filter-group">
-      <label for="search-input">Search</label>
-      <input
-        id="search-input"
-        type="search"
-        placeholder="Search by description..."
-        [(ngModel)]="searchText"
-        (input)="applyFilters()"
-      />
-    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/expenses" routerLinkActive="active" class="nav-item">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Expenses</span>
+      </a>
+      <a routerLink="/expenses/add" routerLinkActive="active" class="nav-item">
+        <mat-icon>add_circle</mat-icon>
+        <span>Add Expense</span>
+      </a>
+      <a routerLink="/categories" routerLinkActive="active" class="nav-item">
+        <mat-icon>category</mat-icon>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </a>
 
-    <div class="filter-actions">
-      <button class="btn-secondary" (click)="resetFilters()">Reset Filters</button>
-    </div>
-  </div>
+      <div class="nav-spacer"></div>
 
-  <!-- Expenses Table -->
-  <div class="table-container" *ngIf="filteredExpenses.length > 0">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let exp of filteredExpenses">
-          <td>
-            <strong>{{ exp.date }}</strong>
-          </td>
-          <td>
-            <span class="category-badge">{{ exp.category }}</span>
-          </td>
-          <td>{{ exp.description }}</td>
-          <td class="amount-cell">{{ exp.amount | currency }}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn-edit btn-sm" (click)="edit(exp.id)">Edit</button>
-              <button class="btn-delete btn-sm" (click)="delete(exp.id)">Delete</button>
+      <a (click)="onLogout()" class="nav-item logout-item">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- HEADER -->
+    <header class="top-header">
+      <div class="header-left">
+        <div class="search-wrapper">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search expenses..."
+            [value]="searchText"
+            (input)="onSearch($event)"
+          />
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button mat-icon-button class="notification-btn">
+          <mat-icon>notifications</mat-icon>
+          <span class="notification-badge"></span>
+        </button>
+
+        <div class="header-divider"></div>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <p class="user-name">User</p>
+            <p class="user-role">Enterprise User</p>
+          </div>
+          <div class="user-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- EXPENSE LIST CONTENT -->
+    <div class="expense-content">
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-title-section">
+          <h2 class="page-title">Expenses</h2>
+          <p class="page-subtitle">Manage and track your spending with high-density precision.</p>
+        </div>
+        <div class="page-actions">
+          <!-- EXPORT DROPDOWN -->
+          <button mat-stroked-button [matMenuTriggerFor]="exportMenu" class="action-btn">
+            <mat-icon>file_download</mat-icon>
+            <span>Export</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #exportMenu="matMenu">
+            <button mat-menu-item (click)="exportToCSV()">
+              <mat-icon>description</mat-icon>
+              <span>Export as CSV</span>
+            </button>
+            <button mat-menu-item (click)="exportToExcel()">
+              <mat-icon>table_chart</mat-icon>
+              <span>Export as Excel</span>
+            </button>
+            <button mat-menu-item (click)="exportToPDF()">
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span>Export as PDF</span>
+            </button>
+          </mat-menu>
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="add-expense-btn"
+            routerLink="/expenses/add"
+          >
+            <mat-icon>add</mat-icon>
+            <span>Add Expense</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STATISTICS CARDS -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <mat-icon class="stat-icon">payments</mat-icon>
+            <span class="stat-label">TOTAL EXPENSES</span>
+          </div>
+          <div class="stat-body">
+            <ng-container *ngIf="expenses$ | async as expenses; else statLoading">
+              <span class="stat-value">{{
+                getTotalExpenses(expenses) | currency: 'INR' : 'symbol' : '1.2-2'
+              }}</span>
+            </ng-container>
+            <ng-template #statLoading>
+              <div class="skeleton-stat"></div>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <mat-icon class="stat-icon">receipt</mat-icon>
+            <span class="stat-label">EXPENSE COUNT</span>
+          </div>
+          <div class="stat-body">
+            <ng-container *ngIf="expenses$ | async as expenses; else statLoading2">
+              <span class="stat-value">{{ expenses.length | number }}</span>
+            </ng-container>
+            <ng-template #statLoading2>
+              <div class="skeleton-stat"></div>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <mat-icon class="stat-icon">category</mat-icon>
+            <span class="stat-label">TOP CATEGORY</span>
+          </div>
+          <div class="stat-body">
+            <ng-container *ngIf="expenses$ | async as expenses; else statLoading3">
+              <span class="stat-value text-truncate">{{ getTopCategory(expenses) }}</span>
+            </ng-container>
+            <ng-template #statLoading3>
+              <div class="skeleton-stat"></div>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <mat-icon class="stat-icon">calendar_month</mat-icon>
+            <span class="stat-label">THIS MONTH</span>
+          </div>
+          <div class="stat-body">
+            <ng-container *ngIf="expenses$ | async as expenses; else statLoading4">
+              <span class="stat-value">{{
+                getThisMonthTotal(expenses) | currency: 'INR' : 'symbol' : '1.2-2'
+              }}</span>
+            </ng-container>
+            <ng-template #statLoading4>
+              <div class="skeleton-stat"></div>
+            </ng-template>
+          </div>
+        </div>
+      </section>
+
+      <!-- AG GRID SECTION -->
+      <section class="grid-section">
+        <!-- GRID TOOLBAR -->
+        <div class="grid-toolbar">
+          <div class="toolbar-left">
+            <h3 class="section-title">All Expenses</h3>
+            <span class="record-count" *ngIf="!(loading$ | async)">
+              {{ pageStatusText }}
+            </span>
+          </div>
+          <div class="toolbar-right">
+            <mat-form-field appearance="outline" class="page-size-select">
+              <mat-label>Per page</mat-label>
+              <mat-select [value]="paginationPageSize" (selectionChange)="onPageSizeChange($event)">
+                <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
+                  {{ size }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- LOADING STATE -->
+        <div *ngIf="loading$ | async" class="loading-state">
+          <mat-spinner diameter="48"></mat-spinner>
+          <p>Loading expenses...</p>
+        </div>
+
+        <!-- ERROR STATE -->
+        <div *ngIf="error$ | async as error" class="error-state">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <h4>Failed to load expenses</h4>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" (click)="loadExpenses()">
+            <mat-icon>refresh</mat-icon>
+            Try Again
+          </button>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <ng-container *ngIf="!(loading$ | async) && !(error$ | async)">
+          <ng-container *ngIf="expenses$ | async as expenses">
+            <div *ngIf="expenses.length === 0" class="empty-state">
+              <div class="empty-state-icon">
+                <mat-icon>receipt_long</mat-icon>
+              </div>
+              <h4 class="empty-state-title">No expenses found</h4>
+              <p class="empty-state-text">Start tracking your expenses to see them here.</p>
+              <button
+                mat-raised-button
+                color="primary"
+                routerLink="/expenses/add"
+                class="empty-state-btn"
+              >
+                <mat-icon>add</mat-icon>
+                Add Your First Expense
+              </button>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          </ng-container>
+        </ng-container>
 
-  <!-- Empty State -->
-  <div class="empty-state" *ngIf="filteredExpenses.length === 0">
-    <p>📊 No expenses found. Try adjusting your filters or add a new expense.</p>
-  </div>
+        <!-- AG GRID -->
+        <div class="grid-wrapper" [class.hidden]="(loading$ | async) || (error$ | async)">
+          <ag-grid-angular
+            class="ag-theme-quartz custom-ag-grid"
+            [rowData]="expenses$ | async"
+            [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef"
+            [loading]="(loading$ | async) ?? false"
+            [pagination]="true"
+            [paginationPageSize]="paginationPageSize"
+            [paginationPageSizeSelector]="pageSizeOptions"
+            [rowSelection]="rowSelection"
+            [context]="gridContext"
+            [animateRows]="true"
+            [suppressCellFocus]="true"
+            (gridReady)="onGridReady($event)"
+            (selectionChanged)="onSelectionChanged($event)"
+            (paginationChanged)="onPaginationChanged()"
+          >
+          </ag-grid-angular>
+        </div>
+      </section>
+    </div>
+  </main>
 </div>

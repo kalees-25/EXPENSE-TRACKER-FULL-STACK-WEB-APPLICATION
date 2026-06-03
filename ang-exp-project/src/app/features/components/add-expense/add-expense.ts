@@ -1,57 +1,109 @@
-import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { Expense } from '../../../models/expense.model';
-import { ExpenseService } from '../../../services/expense-service';
-import { Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+import { Component, inject } from '@angular/core';
+
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { Router } from '@angular/router';
+
+import { Expense } from '../../../models/expense.model';
+
+import { ExpenseService } from '../../expenses/services/expense-service';
+
+import { ExpenseDataService } from '../../expenses/services/expense-data.service';
+
+// ------------------ SweetAlert2 Service  ------------------
+import { AlertService } from '../../../shared/services/alert.service';
 
 @Component({
   selector: 'app-add-expense',
+
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+
+  imports: [CommonModule, ReactiveFormsModule],
+
   templateUrl: './add-expense.html',
+
   styleUrls: ['./add-expense.css'],
 })
-export class AddExpense {
-  form: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private expenseService: ExpenseService,
-    private router: Router,
-  ) {
-    this.form = this.fb.group({
-      date: ['', Validators.required],
-      category: ['', Validators.required],
-      description: ['', Validators.required],
-      amount: [0,[ Validators.required, Validators.min(1)]],
-    });
-  }
+
+export class AddExpenseComponent {
+  
+  private readonly fb = inject(NonNullableFormBuilder);
+
+  private readonly expenseService = inject(ExpenseService);
+
+  private readonly router = inject(Router);
+
+  private readonly expenseDataService = inject(ExpenseDataService);
+
+  // ------------------ INJECT SweetAlert2 Service  ------------------
+  private readonly alertService = inject(AlertService);
+
+  readonly loading$ = this.expenseDataService.loading$;
+
+  errorMsg = '';
+
+  readonly form = this.fb.group({
+    date: ['', [Validators.required]],
+
+    category: ['', [Validators.required]],
+
+    description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+
+    amount: [0, [Validators.required, Validators.min(1)]],
+  });
+
   onSubmit(): void {
     if (this.form.invalid) {
-      //       form-la required fields fill pannala na stop
-      // markAllAsTouched() → error messages kaatta help pannum
       this.form.markAllAsTouched();
+
       return;
     }
-    // Form-la irukkura ella values-um object-aa edukkudhu
+
+    this.errorMsg = '';
+
     const formData = this.form.getRawValue();
 
-    const newexpense = {
-      id: Date.now(),
-      ...formData,
-      amount: Number(formData.amount),
-    };
-    this.expenseService.addExpense(newexpense);
+    const payload = formData as Expense;
 
-    //  Service will:
+    this.expenseService
 
-    //  push into array
-    //  updateState()
-    //  localStorage save
-    // UI auto update
+      .addExpense(payload)
 
-    this.router.navigate(['/expenses']); // REDirect
+      .subscribe({
+        // --------------------------------------------------------------------
+        // ----------SWEET ALERT------------
+        // --------------------------------------------------------------------
+        next: () => {
+          this.alertService.success('Saved', 'Expense added successfully');
+
+          this.router.navigate(['/expenses']);
+        },
+
+        error: (error: HttpErrorResponse) => {
+          this.errorMsg = this.getErrorMessage(error);
+          this.alertService.error('Error', 'Could not save expense');
+        },
+      });
+  }
+
+  private getErrorMessage(error: HttpErrorResponse): string {
+    if (error?.error?.detail) {
+      return error.error.detail;
+    }
+
+    if (error?.status === 0) {
+      return 'Server unreachable';
+    }
+
+    if (error?.status >= 500) {
+      return 'Internal server error';
+    }
+
+    return 'Failed to add expense';
   }
 }

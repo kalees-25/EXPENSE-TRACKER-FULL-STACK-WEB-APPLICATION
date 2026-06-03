@@ -83,7 +83,12 @@
 
       <!-- Form Actions -->
       <div class="form-actions">
-        <button type="submit" [disabled]="form.invalid">Update Expense</button>
+        <button
+          type="submit"
+          [disabled]="form.invalid || ((loading$ | async) ?? false)"
+        >
+          {{ ((loading$ | async) ?? false) ? 'Updating...' : 'Update Expense' }}
+        </button>
       </div>
     </form>
   </div>

@@ -1,79 +1,185 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
-import { ExpenseService } from '../../../services/expense-service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+import { Component, OnInit, inject } from '@angular/core';
+
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { Expense } from '../../../models/expense.model';
+
+import { ExpenseService } from '../../expenses/services/expense-service';
+
+import { ExpenseDataService } from '../../expenses/services/expense-data.service';
+
+// ---------------------------------------------------------------
+// ---------------IMPORT ALERT SERVICE----------------
+// -------------------------------------------------------------
+
+import { AlertService } from '../../../shared/services/alert.service';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { DestroyRef } from '@angular/core';
+
+type EditExpenseFormModel = {
+  date: string;
+
+  category: string;
+
+  description: string;
+
+  amount: number;
+};
 
 @Component({
   selector: 'app-edit-expense',
+
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+
+  imports: [CommonModule, ReactiveFormsModule],
+
   templateUrl: './edit-expense.html',
+
   styleUrls: ['./edit-expense.css'],
 })
-export class EditExpense implements OnInit {
-  constructor(
-    private expenseService: ExpenseService,
-    // --Used to read current URL data--
-    private router: ActivatedRoute,
-    private fb: FormBuilder,
-    private routerNav: Router,
-  ) {}
+export class EditExpenseComponent implements OnInit {
+  private readonly fb = inject(NonNullableFormBuilder);
 
-  // ----------------------------------------------------
+  private readonly route = inject(ActivatedRoute);
 
-  form!: FormGroup; //----DECLARE-----
-  expenseId!: number;
+  private readonly router = inject(Router);
+
+  private readonly expenseService = inject(ExpenseService);
+
+  private readonly expenseDataService = inject(ExpenseDataService);
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  // -----------------------------------------------------------------------
+  // ------------------INJECT ALERT SERVICE----------------
+  // -------------------------------------------------------------------------
+
+  private readonly alertService = inject(AlertService);
+
+  readonly loading$ = this.expenseDataService.loading$;
+
+  errorMsg = '';
+
+  private expenseId: number = 0;
+
+  readonly form = this.fb.group({
+    date: ['', Validators.required],
+
+    category: ['', Validators.required],
+
+    description: ['', Validators.required],
+
+    amount: [0, [Validators.required, Validators.min(1)]],
+  });
+
   ngOnInit(): void {
-    //---------------CREATE FORM USING FORM BUILDER------------
-    this.form = this.fb.group({
-      date: ['', Validators.required],
-      category: ['', Validators.required],
-      description: ['', Validators.required],
-      amount: [null, Validators.required],
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (params) => {
+        const id = Number(params.get('id'));
+
+        if (!id) {
+          this.router.navigate(['/expenses']);
+
+          return;
+        }
+
+        this.expenseId = Number(id);
+
+        this.loadExpense();
+      },
     });
-
-    // WHAT IS THE VALUE OF THE ID IN THE URL OF THE CURRENT PAGE AT THIS MOMENT
-    // this.expenseId =Number(this.router.snapshot.paramMap.get("id"));
-
-    const id = this.router.snapshot.paramMap.get('id');
-
-    if (!id) {
-      this.routerNav.navigate(['/expenses']);
-      return;
-    }
-
-    this.expenseId = Number(id);
-
-    //----------that ID will be used to get the corresponding expense object-----------
-    const expense = this.expenseService.getExpenseById(this.expenseId);
-
-    //------------To check if the data is available-----------
-    if (expense) {
-      this.form.patchValue(expense);
-    } else {
-      this.routerNav.navigate(['/expenses']);
-    }
   }
 
-  //-----------------SUBMIT-----------------------
-  onSubmit(): void {
-    if (this.form.invalid) {
-      // form-la required fields fill pannala na stop
-      // markAllAsTouched() → error messages kaatta help pannum
-      this.form.markAllAsTouched();
+  private loadExpense(): void {
+    const expense = this.expenseService.getExpenseById(this.expenseId);
+
+    if (!expense) {
+      this.router.navigate(['/expenses']);
+
       return;
     }
+
+    this.form.patchValue({
+      date: expense.date,
+
+      category: expense.category,
+
+      description: expense.description,
+
+      amount: expense.amount,
+    });
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+
+      return;
+    }
+
+    this.errorMsg = '';
+
     const formData = this.form.getRawValue();
 
-    const updatedExpense = {
+    const updatedExpense: Expense = {
       id: this.expenseId,
+
       ...formData,
-      amount: Number(formData.amount),
     };
 
-    this.expenseService.updateExpense(updatedExpense);
+    this.expenseService
 
-    this.routerNav.navigate(['/expenses']);
+      .updateExpense(updatedExpense)
+
+      .subscribe({
+        next: () => {
+          this.alertService.success('Updated', 'Expense updated successfully');
+
+          this.router.navigate(['/expenses']);
+        },
+
+        error: (error: HttpErrorResponse) => {
+          this.errorMsg = this.getErrorMessage(error);
+          this.alertService.error('Error', 'Could not update expense');
+        },
+      });
+  }
+
+  private getErrorMessage(error: HttpErrorResponse): string {
+    if (error?.error?.detail) {
+      return error.error.detail;
+    }
+
+    if (error.status === 0) {
+      return 'Server unreachable';
+    }
+
+    if (error.status >= 500) {
+      return 'Internal server error';
+    }
+
+    return 'Failed to update expense';
+  }
+
+  hasError(
+    controlName: keyof EditExpenseFormModel,
+
+    errorName: string,
+  ): boolean {
+    const control = this.form.get(controlName);
+
+    return !!(control?.touched && control.hasError(errorName));
+  }
+
+  get f() {
+    return this.form.controls;
   }
 }

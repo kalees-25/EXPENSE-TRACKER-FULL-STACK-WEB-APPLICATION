@@ -1,8 +1,10 @@
-<nav> 
+<nav>
   <h1 class="brand">💰 Expense Tracker</h1>
   <ul class="nav-links">
     <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
     <li><a routerLink="/expenses" routerLinkActive="active">Expenses</a></li>
-    <li><a routerLink="/add" routerLinkActive="active">Add Expense</a></li>
+    <li><a routerLink="/expenses/add" routerLinkActive="active">Add Expense</a></li>
   </ul>
 </nav>
+
+<button (click)="onLogout()">Logout</button>

@@ -105,7 +105,13 @@
 
       <!-- Form Actions -->
       <div class="form-actions">
-        <button type="submit" [disabled]="form.invalid" class="btn-primary">Add Expense</button>
+        <button
+          type="submit"
+          [disabled]="form.invalid || ((loading$ | async) ?? false)"
+          class="btn-primary"
+        >
+          {{ ((loading$ | async) ?? false) ? 'Saving...' : 'Add Expense' }}
+        </button>
       </div>
     </form>
   </div>

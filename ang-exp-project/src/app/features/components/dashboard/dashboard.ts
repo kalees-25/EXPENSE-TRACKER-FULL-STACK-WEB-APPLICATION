@@ -1,48 +1,124 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, KeyValue } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { map, shareReplay } from 'rxjs';
+
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 import { Expense } from '../../../models/expense.model';
-import { ExpenseService } from '../../../services/expense-service';
+import { ExpenseDataService } from '../../expenses/services/expense-data.service';
+import { AuthService } from '../features/auth/auth.service';
+
+type DashboardViewModel = {
+  totalExpense: number;
+  expenseCount: number;
+  topCategory: string;
+  topCategoryAmount: number;
+  recentExpenses: Expense[];
+  categoryTotals: Record<string, number>;
+  thisMonthTotal: number;
+  lastMonthTotal: number;
+  monthChangePercent: number;
+};
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+  styleUrls: ['./dashboard.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard implements OnInit {
-  allExpenses: Expense[] = [];
-  totalExpense: number = 0;
-  categoryTotals: Record<string, number> = {};
-  recentExpenses: Expense[] = [];
+export class Dashboard {
+  private readonly expenseDataService = inject(ExpenseDataService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(private expenseService: ExpenseService) {}
+  readonly vm$ = this.expenseDataService.expenses$.pipe(
+    map((expenses) => this.buildViewModel(expenses)),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
 
-  ngOnInit(): void {
-    this.expenseService.expense$.subscribe((data) => {
-      this.allExpenses = data;
-      this.calculateDashboard();
-    });
-  }
+  private buildViewModel(expenses: Expense[]): DashboardViewModel {
+    const normalizedExpenses = expenses.map((exp) => ({
+      ...exp,
+      amount: Number(exp.amount || 0),
+    }));
 
-  calculateDashboard(): void {
-    this.totalExpense = this.allExpenses.reduce((total: number, exp: Expense) => {
-      return total + Number(exp.amount || 0);
-    }, 0);
+    const totalExpense = normalizedExpenses.reduce((total, exp) => total + exp.amount, 0);
 
-    this.categoryTotals = this.allExpenses.reduce(
+    const expenseCount = normalizedExpenses.length;
+
+    const categoryTotals = normalizedExpenses.reduce(
       (acc, exp) => {
-        const category = exp.category || 'undefined'; //acc[category] = On that category current total
-        acc[category] = (acc[category] || 0) + Number(exp.amount);
+        const category = exp.category?.trim() || 'Uncategorized';
+        acc[category] = (acc[category] || 0) + exp.amount;
         return acc;
       },
-      // ----start with empty object {}-----
       {} as Record<string, number>,
-    ); // It Is  string key, number value  object
+    );
 
-    //----------RECENT EXPENSES-------------
-    this.recentExpenses = [...this.allExpenses]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) //  getTime->date →  convert into milliseconds
+    const topCategoryEntry = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
+
+    const recentExpenses = [...normalizedExpenses]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 5);
+
+    const now = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear = now.getFullYear();
+
+    const lastMonthDate = new Date(now);
+    lastMonthDate.setMonth(now.getMonth() - 1);
+
+    const lastMonth = lastMonthDate.getMonth();
+    const lastYear = lastMonthDate.getFullYear();
+
+    const thisMonthTotal = normalizedExpenses
+      .filter((exp) => {
+        const d = new Date(exp.date);
+        return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+      })
+      .reduce((sum, exp) => sum + exp.amount, 0);
+
+    const lastMonthTotal = normalizedExpenses
+      .filter((exp) => {
+        const d = new Date(exp.date);
+        return d.getMonth() === lastMonth && d.getFullYear() === lastYear;
+      })
+      .reduce((sum, exp) => sum + exp.amount, 0);
+
+    const monthChangePercent =
+      lastMonthTotal > 0
+        ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100
+        : thisMonthTotal > 0
+          ? 100
+          : 0;
+
+    return {
+      totalExpense,
+      expenseCount,
+      topCategory: topCategoryEntry?.[0] ?? 'N/A',
+      topCategoryAmount: topCategoryEntry?.[1] ?? 0,
+      recentExpenses,
+      categoryTotals,
+      thisMonthTotal,
+      lastMonthTotal,
+      monthChangePercent,
+    };
+  }
+
+  trackByExpenseId(index: number, expense: Expense): number | string {
+    return expense.id ?? index;
+  }
+
+  trackByCategory(_: number, item: KeyValue<string, number>): string {
+    return item.key;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
