@@ -1,5 +1,5 @@
 import { CommonModule, KeyValue } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { map, shareReplay } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Expense } from '../../../models/expense.model';
 import { ExpenseDataService } from '../../expenses/services/expense-data.service';
 import { AuthService } from '../features/auth/auth.service';
+import { ExpenseService } from '../../expenses/services/expense-service';
 
 type DashboardViewModel = {
   totalExpense: number;
@@ -30,10 +31,16 @@ type DashboardViewModel = {
   styleUrls: ['./dashboard.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
   private readonly expenseDataService = inject(ExpenseDataService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly expenseService = inject(ExpenseService);
+
+
+  ngOnInit(): void {
+  this.expenseService.loadExpenses();
+}
 
   readonly vm$ = this.expenseDataService.expenses$.pipe(
     map((expenses) => this.buildViewModel(expenses)),
@@ -58,6 +65,8 @@ export class Dashboard {
       },
       {} as Record<string, number>,
     );
+
+   
 
     const topCategoryEntry = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
 

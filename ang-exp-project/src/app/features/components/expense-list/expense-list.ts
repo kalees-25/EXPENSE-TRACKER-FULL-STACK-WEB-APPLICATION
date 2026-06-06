@@ -1,6 +1,24 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // expense-list.component.ts
 
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+
+import { Subject, Subscription, combineLatest } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 import { CommonModule, AsyncPipe, NgIf, CurrencyPipe } from '@angular/common';
 
@@ -27,7 +45,7 @@ import { expenseGridColumnDefs } from '../../../configs/expense-grid.config';
 
 import { expenseDefaultColDef } from '../../../configs/expense-grid.default';
 
-import { PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE } from '../../../configs/expense-grid.pagination';
+import { PAGE_SIZE_OPTIONS } from '../../../configs/expense-grid.pagination';
 
 import { ExpenseService } from '../../expenses/services/expense-service';
 
@@ -62,7 +80,7 @@ import { AuthService } from '../features/auth/auth.service';
 
   styleUrls: ['./expense-list.css'],
 })
-export class ExpenseListComponent implements OnInit {
+export class ExpenseListComponent implements OnInit, OnDestroy {
   // -----------------------------------
   //  INJECT SERVICES
   // -----------------------------------
@@ -94,6 +112,17 @@ export class ExpenseListComponent implements OnInit {
 
   readonly totalRecords$ = this.expenseDataService.totalRecords$;
 
+  readonly currentPage$ = this.expenseDataService.currentPage$;
+
+
+
+  readonly totalPages$ = combineLatest([
+    this.expenseDataService.totalRecords$,
+    this.expenseDataService.pageSize$,
+  ]).pipe
+  (map(([total, size]) => 
+    Math.ceil(total / size) || 1));
+
   // -----------------------------------
   //  CURRENT SELECTED ROWS STORED IN SERVICE
   // -----------------------------------
@@ -124,7 +153,7 @@ export class ExpenseListComponent implements OnInit {
 
   readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-  paginationPageSize = DEFAULT_PAGE_SIZE;
+  paginationPageSize =    this.expenseDataService.getPageSizeSnapshot();
 
   // -----------------------------------
   //            ROW SELECTION
@@ -159,10 +188,12 @@ export class ExpenseListComponent implements OnInit {
   pageStatusText = '';
 
   // -----------------------------------
-  // LOADING FLAG TO PREVENT LOOP
+  // SUBSCRIPTIONS
   // -----------------------------------
 
-  private isLoadingData = false;
+  private readonly searchSubject = new Subject<string>();
+
+  private readonly subscriptions = new Subscription();
 
   // -----------------------------------
   // COMPONENT INIT
@@ -170,9 +201,30 @@ export class ExpenseListComponent implements OnInit {
 
   ngOnInit(): void {
     this.expenseDataService.setCurrentPage(1);
-    this.isLoadingData = true;
+
+    this.subscriptions.add(
+      this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe((value) => {
+        this.expenseDataService.setSearchText(value);
+        this.expenseDataService.setCurrentPage(1);
+        this.expenseService.loadExpenses();
+      }),
+    );
+
+    this.subscriptions.add(
+      this.totalRecords$.subscribe(() => {
+        this.updatePageStatus();
+      }),
+    );
+
     this.expenseService.loadExpenses();
-    this.isLoadingData = false;
+  }
+
+  // -----------------------------------
+  // COMPONENT DESTROY
+  // -----------------------------------
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // -----------------------------------
@@ -181,10 +233,6 @@ export class ExpenseListComponent implements OnInit {
 
   onGridReady(event: GridReadyEvent<Expense>): void {
     this.gridApi = event.api;
-
-    this.totalRecords$.subscribe(() => {
-      this.updatePageStatus();
-    });
   }
 
   // -----------------------------------
@@ -196,35 +244,12 @@ export class ExpenseListComponent implements OnInit {
 
     this.searchText = value;
 
-    this.expenseDataService.setCurrentPage(1);
-
-    this.expenseService.loadExpense
-    this.updatePageStatus();
-  }
-
-  // -----------------------------------
-  // PAGINATION CHANGED
-  // -----------------------------------
-
-  onPaginationChanged(): void {
-    this.updatePageStatus();
+    this.searchSubject.next(value);
   }
 
   // -----------------------------------
   // ROW SELECTION
-  //if (!this.gridApi) {
-      return;
-    }
-
-    const currentPage = this.gridApi.paginationGetCurrentPage() + 1;
-    const storedPage = this.expenseDataService.getCurrentPageSnapshot();
-
-    if (currentPage !== storedPage) {
-      this.expenseDataService.setCurrentPage(currentPage);
-      this.expenseService.loadExpenses();
-    }
-
-     -----------------------------------
+  // -----------------------------------
 
   onSelectionChanged(event: SelectionChangedEvent<Expense>): void {
     const selectedRows = event.api.getSelectedRows();
@@ -259,7 +284,7 @@ export class ExpenseListComponent implements OnInit {
   // DELETE ACTION
   // -----------------------------------
 
-  async onDelexpenseService.loadExpensense: Expense): Promise<void> {
+  async onDeleteExpense(expense: Expense): Promise<void> {
     const result = await this.alertService.confirmDelete(
       'Delete Expense',
       `"${expense.description}" will be removed permanently.`,
@@ -271,7 +296,7 @@ export class ExpenseListComponent implements OnInit {
     this.expenseService.deleteExpense(expense.id).subscribe({
       next: () => {
         this.alertService.success('Deleted', 'Expense was deleted successfuly');
-        this.updatePageStatus();
+        this.expenseService.loadExpenses();
       },
       error: () => {
         this.alertService.error('Delete Failed', 'Unable to remove expense');
@@ -291,7 +316,14 @@ export class ExpenseListComponent implements OnInit {
     this.gridApi.exportDataAsCsv({
       fileName: 'expenses.csv',
     });
-  }const totalRows = this.expenseDataService.getTotalRecordsSnapshot();
+  }
+
+  // -----------------------------------
+  // UPDATE CURRENT PAGE STATUS
+  // -----------------------------------
+
+  private updatePageStatus(): void {
+    const totalRows = this.expenseDataService.getTotalRecordsSnapshot();
     const pageSize = this.expenseDataService.getPageSizeSnapshot();
     const currentPage = this.expenseDataService.getCurrentPageSnapshot();
 
@@ -301,24 +333,14 @@ export class ExpenseListComponent implements OnInit {
 
     if (!totalRows) {
       this.pageStatusText = 'No expenses found';
-
       return;
     }
 
     const totalPages = Math.ceil(totalRows / pageSize);
-
     const startRow = (currentPage - 1) * pageSize + 1;
-
     const endRow = Math.min(currentPage * pageSize, totalRows);
 
-    this.pageStatusText = `Showing ${startRow}-${endRow} of ${totalRows} expenses | Page ${currentPage}
-      totalRows,
-    );
-
-    this.pageStatusText = `Showing ${startRow}-${endRow}
-       of ${totalRows} expenses
-       | Page ${currentPage}
-       of ${totalPages}`;
+    this.pageStatusText = `Showing ${startRow}-${endRow} of ${totalRows} expenses | Page ${currentPage} of ${totalPages}`;
   }
 
   // -----------------------------------
@@ -359,6 +381,31 @@ export class ExpenseListComponent implements OnInit {
   }
 
   // -----------------------------------
+  // PAGE NAVIGATION
+  // -----------------------------------
+
+  goToNextPage(): void {
+    const currentPage = this.expenseDataService.getCurrentPageSnapshot();
+    const total = this.expenseDataService.getTotalRecordsSnapshot();
+    const pageSize = this.expenseDataService.getPageSizeSnapshot();
+    const totalPages = Math.ceil(total / pageSize);
+
+    if (currentPage < totalPages) {
+      this.expenseDataService.setCurrentPage(currentPage + 1);
+      this.expenseService.loadExpenses();
+    }
+  }
+
+  goToPrevPage(): void {
+    const currentPage = this.expenseDataService.getCurrentPageSnapshot();
+
+    if (currentPage > 1) {
+      this.expenseDataService.setCurrentPage(currentPage - 1);
+      this.expenseService.loadExpenses();
+    }
+  }
+
+  // -----------------------------------
   // PAGE SIZE CHANGE (Mat-Select)
   // -----------------------------------
 
@@ -374,18 +421,22 @@ export class ExpenseListComponent implements OnInit {
     this.paginationPageSize = pageSize;
 
     this.expenseDataService.setPageSize(pageSize);
-
-    this.gridApi?.setGridOption('paginationPageSize', pageSize);
-
-    this.updatePageStatus();
-  }
-
     this.expenseDataService.setCurrentPage(1);
 
-    this.gridApi?.setGridOption('paginationPageSize', pageSize);
-    this.gridApi?.paginationGoToFirstPage();
+    this.expenseService.loadExpenses();
+  }
 
-    this.expenseService.loadExpense
+
+
+
+  onPaginationChanged(): void {
+  this.updatePageStatus();
+}
+
+  // -----------------------------------
+  // EXPORT FUNCTIONS
+  // -----------------------------------
+
   exportToCSV(): void {
     if (!this.gridApi) return;
     this.gridApi.exportDataAsCsv({
