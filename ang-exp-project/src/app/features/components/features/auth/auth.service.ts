@@ -8,7 +8,13 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 import { environment } from '../../../../../environments/environment';
 
-import { LoginRequest, RegisterRequest, AuthResponse, RegisterResponse, UserResponse } from '../../../../models/auth.model';
+import {
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  RegisterResponse,
+  User,
+} from '../../../../models/auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -30,13 +36,32 @@ export class AuthService {
 
   isAuthenticated$ = this.authStateSubject.asObservable();
 
+
   // ---------------- CURRENT USER ----------------
+  
+  private currentUserSubject =
+  new BehaviorSubject<User | null>(null);
 
-  private currentUserSubject = new BehaviorSubject<UserResponse | null>(null);
+currentUser$ =
+  this.currentUserSubject.asObservable();
 
-  currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) {
+
+    const storedUser =
+    localStorage.getItem(
+      'currentUser'
+    );
+
+  if (storedUser) {
+
+    this.currentUserSubject.next(
+      JSON.parse(storedUser)
+    );
+
+  }
+  }
 
   // ==================================================
   //                  REGISTER
@@ -67,7 +92,8 @@ export class AuthService {
         tap((response) => {
           this.setToken(response.access_token);
 
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
+
+          localStorage.setItem('currentUser',JSON.stringify(response.user));
 
           this.authStateSubject.next(true);
 
@@ -85,13 +111,17 @@ export class AuthService {
 
     localStorage.removeItem(this.TOKEN_KEY);
 
+
+
     localStorage.removeItem('currentUser');
 
     // UPDATE AUTH STATE
 
     this.authStateSubject.next(false);
 
-    this.currentUserSubject.next(null);
+
+     this.currentUserSubject.next(null);
+
   }
 
   // ==================================================
@@ -139,7 +169,8 @@ export class AuthService {
       // TOKEN EXPIRED
 
       if (!decoded.exp || decoded.exp < currentTime) {
-        localStorage.removeItem(this.TOKEN_KEY);
+        
+        localStorage.removeItem(this.TOKEN_KEY)
 
         return false;
       }
@@ -148,7 +179,7 @@ export class AuthService {
     } catch {
       // INVALID TOKEN
 
-      localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.TOKEN_KEY)
 
       return false;
     }

@@ -1,7 +1,9 @@
 import { CommonModule, KeyValue } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { map, shareReplay } from 'rxjs';
+
+import { ExpenseService } from '../../expenses/services/expense-service';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { Expense } from '../../../models/expense.model';
 import { ExpenseDataService } from '../../expenses/services/expense-data.service';
 import { AuthService } from '../features/auth/auth.service';
-import { ExpenseService } from '../../expenses/services/expense-service';
 
 type DashboardViewModel = {
   totalExpense: number;
@@ -35,17 +36,19 @@ export class Dashboard implements OnInit {
   private readonly expenseDataService = inject(ExpenseDataService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+
   private readonly expenseService = inject(ExpenseService);
 
-
-  ngOnInit(): void {
-  this.expenseService.loadExpenses();
-}
+  readonly currentUser$ = this.authService.currentUser$;
 
   readonly vm$ = this.expenseDataService.expenses$.pipe(
     map((expenses) => this.buildViewModel(expenses)),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
+
+  ngOnInit(): void {
+    this.expenseService.loadExpenses();
+  }
 
   private buildViewModel(expenses: Expense[]): DashboardViewModel {
     const normalizedExpenses = expenses.map((exp) => ({
@@ -65,8 +68,6 @@ export class Dashboard implements OnInit {
       },
       {} as Record<string, number>,
     );
-
-   
 
     const topCategoryEntry = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
 

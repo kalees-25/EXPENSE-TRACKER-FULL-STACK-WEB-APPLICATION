@@ -81,11 +81,6 @@
               <p class="user-role">Not Logged In</p>
             }
           </div>
-
-          <!-- <p class="user-name">User</p>
-           <p class="user-role">Enterprise User</p> -->
-
-
           <div class="user-avatar">
             <mat-icon>account_circle</mat-icon>
           </div>
@@ -229,7 +224,6 @@
         </div>
 
         <!-- EMPTY STATE -->
-
         <ng-container *ngIf="!(loading$ | async) && !(error$ | async)">
           <ng-container *ngIf="expenses$ | async as expenses">
             <div *ngIf="expenses.length === 0" class="empty-state">

@@ -1,4 +1,4 @@
-import { HttpClient , HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -19,8 +19,10 @@ export class ExpenseApi {
     search?: string,
     category?: string,
     sortBy?: string,
-    sortOrder?: string
+    sortOrder?: string,
+
   ): Observable<ExpenseListResponse> {
+    
     let params = new HttpParams()
       .set('page', page.toString())
       .set('page_size', pageSize.toString());
@@ -54,5 +56,9 @@ export class ExpenseApi {
 
   deleteExpense(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getExpenseById(id: number): Observable<Expense> {
+    return this.http.get<Expense>(`${this.apiUrl}/${id}`);
   }
 }

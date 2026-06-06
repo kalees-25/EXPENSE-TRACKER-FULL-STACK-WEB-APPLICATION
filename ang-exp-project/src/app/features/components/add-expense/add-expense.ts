@@ -6,7 +6,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { Expense } from '../../../models/expense.model';
 
@@ -14,24 +14,51 @@ import { ExpenseService } from '../../expenses/services/expense-service';
 
 import { ExpenseDataService } from '../../expenses/services/expense-data.service';
 
-// ------------------ SweetAlert2 Service  ------------------
+import { AuthService } from '../features/auth/auth.service';
+
+// -------------------------------------------------------------------
+// --------------------ANGULAR MATERIAL  --------------------
+// ----------------------------------------------------------------
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+// -------------------------------------------------------------
+// ------------------ SweetAlert2 Service  ---------------------
+// -------------------------------------------------------------
 import { AlertService } from '../../../shared/services/alert.service';
+
+// ------------------ Angular Material  ------------------
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-expense',
 
   standalone: true,
 
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+  ],
 
   templateUrl: './add-expense.html',
 
   styleUrls: ['./add-expense.css'],
 })
-
-
 export class AddExpenseComponent {
-  
   private readonly fb = inject(NonNullableFormBuilder);
 
   private readonly expenseService = inject(ExpenseService);
@@ -40,15 +67,31 @@ export class AddExpenseComponent {
 
   private readonly expenseDataService = inject(ExpenseDataService);
 
+  private readonly authService = inject(AuthService);
+
   // ------------------ INJECT SweetAlert2 Service  ------------------
   private readonly alertService = inject(AlertService);
+
+  readonly currentUser$ = this.authService.currentUser$;
 
   readonly loading$ = this.expenseDataService.loading$;
 
   errorMsg = '';
 
+  readonly categories = [
+    { value: 'Food', label: 'Food', icon: 'restaurant' },
+    { value: 'Travel', label: 'Travel', icon: 'flight' },
+    { value: 'Shopping', label: 'Shopping', icon: 'shopping_cart' },
+    { value: 'Bills', label: 'Bills', icon: 'receipt_long' },
+    { value: 'Health', label: 'Health', icon: 'favorite' },
+    { value: 'Entertainment', label: 'Entertainment', icon: 'movie' },
+    { value: 'Rent', label: 'Rent', icon: 'home' },
+    { value: 'Working', label: 'Working', icon: 'work' },
+    { value: 'Loan', label: 'Loan', icon: 'account_balance' },
+  ];
+
   readonly form = this.fb.group({
-    date: ['', [Validators.required]],
+    date: this.fb.control<Date | null>(null, [Validators.required]),
 
     category: ['', [Validators.required]],
 
@@ -66,9 +109,14 @@ export class AddExpenseComponent {
 
     this.errorMsg = '';
 
-    const formData = this.form.getRawValue();
+    const raw = this.form.getRawValue();
 
-    const payload = formData as Expense;
+    const payload: Expense = {
+      date: raw.date ? (raw.date as Date).toISOString().split('T')[0] : '',
+      category: raw.category,
+      description: raw.description,
+      amount: raw.amount,
+    } as Expense;
 
     this.expenseService
 
@@ -89,6 +137,15 @@ export class AddExpenseComponent {
           this.alertService.error('Error', 'Could not save expense');
         },
       });
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/expenses']);
+  }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   private getErrorMessage(error: HttpErrorResponse): string {

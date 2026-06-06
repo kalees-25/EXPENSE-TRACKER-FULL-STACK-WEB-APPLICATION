@@ -18,7 +18,9 @@ export const expenseGridColumnDefs: ColDef<Expense>[] = [
 
     filter: 'agDateColumnFilter',
 
-    minWidth: 150,
+    flex: 1,
+
+    minWidth: 130,
 
     sort: 'desc',
 
@@ -32,10 +34,11 @@ export const expenseGridColumnDefs: ColDef<Expense>[] = [
 
     field: 'category',
 
-
     filter: 'agTextColumnFilter',
 
-    minWidth: 160,
+    flex: 1,
+
+    minWidth: 140,
 
     tooltipField: 'category',
   },
@@ -109,7 +112,7 @@ export const expenseGridColumnDefs: ColDef<Expense>[] = [
 
     pinned: 'right',
 
-    width: 180,
+    width: 150,
 
     cellClass: 'grid-actions-cell',
 

@@ -1,0 +1,158 @@
+<p>profile works!</p>
+<!-- ============================================
+     ENTERPRISE EXPENSE MANAGER - Profile
+     ============================================ -->
+
+<div class="profile-layout">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+      <div class="logo-text">
+        <h1>Enterprise Expense</h1>
+        <p>Manager</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/expenses" routerLinkActive="active" class="nav-item">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Expenses</span>
+      </a>
+      <a routerLink="/expenses/add" routerLinkActive="active" class="nav-item">
+        <mat-icon>add_circle</mat-icon>
+        <span>Add Expense</span>
+      </a>
+      <a routerLink="/categories" routerLinkActive="active" class="nav-item">
+        <mat-icon>category</mat-icon>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </a>
+
+      <div class="nav-spacer"></div>
+
+      <a (click)="onLogout()" class="nav-item logout-item">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-left">
+        <h2 class="header-title">Profile</h2>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button class="notification-btn">
+          <mat-icon>notifications</mat-icon>
+          <span class="notification-badge"></span>
+        </button>
+        <div class="header-divider"></div>
+        <div class="user-profile-header">
+          <div class="user-info">
+            @if (currentUser$ | async; as user) {
+              <p class="user-name">{{ user.username }}</p>
+              <p class="user-role">{{ user.email }}</p>
+            } @else {
+              <p class="user-name">Guest User</p>
+              <p class="user-role">Not Logged In</p>
+            }
+          </div>
+          <div class="user-avatar-sm">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PROFILE CONTENT -->
+    <div class="profile-content">
+      <ng-container *ngIf="currentUser$ | async as user; else noUser">
+        <mat-card class="profile-card">
+          <!-- Avatar -->
+          <div class="avatar-section">
+            <div class="avatar-circle">
+              <mat-icon class="avatar-icon">account_circle</mat-icon>
+            </div>
+            <h2 class="display-name">{{ user.username }}</h2>
+            <span class="status-badge">
+              <mat-icon class="status-icon">check_circle</mat-icon>
+              Active
+            </span>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- User Details -->
+          <div class="details-section">
+            <div class="detail-row">
+              <div class="detail-label">
+                <mat-icon>badge</mat-icon>
+                <span>Username</span>
+              </div>
+              <span class="detail-value">{{ user.username }}</span>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="detail-row">
+              <div class="detail-label">
+                <mat-icon>email</mat-icon>
+                <span>Email</span>
+              </div>
+              <span class="detail-value">{{ user.email }}</span>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="detail-row">
+              <div class="detail-label">
+                <mat-icon>tag</mat-icon>
+                <span>User ID</span>
+              </div>
+              <span class="detail-value detail-id">#{{ user.id }}</span>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="detail-row">
+              <div class="detail-label">
+                <mat-icon>verified_user</mat-icon>
+                <span>Account Status</span>
+              </div>
+              <span class="detail-value status-active">Active</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="actions-section">
+            <button mat-stroked-button class="logout-btn" (click)="onLogout()">
+              <mat-icon>logout</mat-icon>
+              Logout
+            </button>
+          </div>
+        </mat-card>
+      </ng-container>
+
+      <ng-template #noUser>
+        <div class="no-user-state">
+          <mat-icon>person_off</mat-icon>
+          <p>No user session found.</p>
+          <button mat-flat-button color="primary" routerLink="/login">Go to Login</button>
+        </div>
+      </ng-template>
+    </div>
+  </main>
+</div>

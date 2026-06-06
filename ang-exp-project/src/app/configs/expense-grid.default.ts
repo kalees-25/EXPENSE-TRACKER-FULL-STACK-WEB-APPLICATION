@@ -17,6 +17,6 @@ export const expenseDefaultColDef: ColDef<Expense> = {
   cellClass: 'grid-cell',
 
   filterParams: {
-    buttons: ['reset'],
+    buttons: [ 'apply', 'reset'],
   },
 };

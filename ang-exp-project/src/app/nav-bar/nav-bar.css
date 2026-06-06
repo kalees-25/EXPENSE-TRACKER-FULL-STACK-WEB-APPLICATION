@@ -56,6 +56,29 @@ a {
 }
 
 /* ============================================================================
+   USER PROFILE DROPDOWN
+   ============================================================================ */
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.avatar-btn {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.avatar-btn mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.avatar-btn:hover {
+  color: #ffffff !important;
+}
+
+/* ============================================================================
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 768px) {

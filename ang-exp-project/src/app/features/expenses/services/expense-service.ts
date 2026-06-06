@@ -21,7 +21,9 @@ export class ExpenseService {
     this.expenseDataService.clearError();
 
     const page = this.expenseDataService.getCurrentPageSnapshot();
+
     const pageSize = this.expenseDataService.getPageSizeSnapshot();
+    
     const search = this.expenseDataService.getSearchTextSnapshot();
 
     this.expenseApi
@@ -110,8 +112,24 @@ export class ExpenseService {
     );
   }
 
-  // -------GET EXPENSE BY ID-------
+  // -------GET EXPENSE BY ID (from cache)-------
   getExpenseById(id: number): Expense | undefined {
     return this.expenseDataService.getExpensesSnapshot().find((expense) => expense.id === id);
+  }
+
+  // -------FETCH EXPENSE BY ID (from API)-------
+  fetchExpenseById(id: number): Observable<Expense> {
+    this.expenseDataService.setLoading(true);
+    this.expenseDataService.clearError();
+
+    return this.expenseApi.getExpenseById(id).pipe(
+      finalize(() => {
+        this.expenseDataService.setLoading(false);
+      }),
+      catchError((error) => {
+        this.expenseDataService.setError('Failed to load expense');
+        throw error;
+      }),
+    );
   }
 }

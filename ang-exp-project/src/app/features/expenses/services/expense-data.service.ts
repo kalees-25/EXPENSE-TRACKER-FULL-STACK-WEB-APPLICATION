@@ -54,6 +54,9 @@ export class ExpenseDataService {
 
   private readonly pageSizeSubject = new BehaviorSubject<number>(10);
 
+
+
+  //  OBSERVABLE
   readonly pageSize$ = this.pageSizeSubject.asObservable();
 
   private readonly currentPageSubject = new BehaviorSubject<number>(1);

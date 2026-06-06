@@ -19,6 +19,41 @@ import { ExpenseActionRendererParams } from '../../../../models/expense-grid.mod
   standalone: true,
   imports: [CommonModule],
   templateUrl: './expense-actions-renderer.component.html',
+  styles: [`
+    .actions-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+    }
+    .cell-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+      white-space: nowrap;
+      line-height: 1.5;
+    }
+    .cell-edit-btn {
+      background-color: rgba(73, 62, 229, 0.08);
+      color: #493ee5;
+      border-color: rgba(73, 62, 229, 0.2);
+    }
+    .cell-edit-btn:hover { background-color: rgba(73, 62, 229, 0.16); }
+    .cell-delete-btn {
+      background-color: rgba(186, 26, 26, 0.08);
+      color: #ba1a1a;
+      border-color: rgba(186, 26, 26, 0.2);
+    }
+    .cell-delete-btn:hover { background-color: rgba(186, 26, 26, 0.16); }
+  `],
 })
 export class ExpenseActionsRendererComponent implements ICellRendererAngularComp {
   //  ------------------------------------

@@ -20,7 +20,7 @@
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
-      <a routerLink="/expenses" routerLinkActive="active" class="nav-item">
+      <a routerLink="/expenses" routerLinkActive="active" class="nav-item" [routerLinkActiveOptions]="{ exact: true }" >
         <mat-icon>receipt_long</mat-icon>
         <span>Expenses</span>
       </a>
@@ -65,8 +65,13 @@
 
         <div class="user-profile">
           <div class="user-info">
-            <p class="user-name">User</p>
-            <p class="user-role">Enterprise User</p>
+            @if (currentUser$ | async; as user) {
+              <p class="user-name">{{ user.username }}</p>
+              <p class="user-role">{{ user.email }}</p>
+            } @else {
+              <p class="user-name">Guest User</p>
+              <p class="user-role">Not Logged In</p>
+            }
           </div>
           <div class="user-avatar">
             <mat-icon>account_circle</mat-icon>
@@ -213,7 +218,7 @@
                 </div>
               </ng-template>
 
-              <button mat-button class="view-report-btn">View Detailed Report</button>
+              <!-- <button mat-button class="view-report-btn">View Detailed Report</button> -->
             </div>
 
             <!-- Monthly Summary Card -->

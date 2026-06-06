@@ -36,7 +36,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   
-  --sidebar-width: 260px;
+  --sidebar-width: 240px;
   --header-height: 64px;
   
   display: block;
@@ -493,7 +493,7 @@
   background-color: var(--surface-container-lowest);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--shadow-card);
 }
 
@@ -537,21 +537,87 @@
 }
 
 .page-size-select {
-  width: 100px;
+  width: 140px;
 }
 
-.page-size-select ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none;
+
+
+/* ============================================
+   PAGINATION CONTROLS
+   ============================================ */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.page-size-select ::ng-deep .mat-mdc-text-field-wrapper {
-  height: 40px;
+.page-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 14px;
+  height: 36px;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-container-lowest);
+  color: var(--on-surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-inter);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
 }
 
-.page-size-select ::ng-deep .mat-mdc-form-field-infix {
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
-  min-height: unset;
+.page-nav-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
+.page-nav-btn:hover:not([disabled]) {
+  background-color: var(--surface-container-low);
+  border-color: var(--outline-variant);
+}
+
+.page-nav-btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  font-family: var(--font-inter);
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  white-space: nowrap;
+  min-width: 100px;
+  text-align: center;
+}
+
+/* ============================================
+   GRID BOTTOM BAR
+   ============================================ */
+.grid-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--surface-container-lowest);
+}
+
+.bottom-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bottom-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* ============================================
@@ -679,7 +745,7 @@
    AG GRID WRAPPER
    ============================================ */
 .grid-wrapper {
-  height: 600px;
+  height: clamp(400px, calc(100vh - 420px), 700px);
   width: 100%;
 }
 
@@ -702,7 +768,6 @@ ag-grid-angular {
   --ag-background-color: var(--surface-container-lowest);
   --ag-odd-row-background-color: var(--surface-container-lowest);
   --ag-row-hover-color: var(--surface-container-low);
-  --ag-selected-row-background-color: rgba(99, 91, 255, 0.08);
   --ag-border-color: var(--border-subtle);
   --ag-header-foreground-color: var(--on-surface-variant);
   --ag-cell-horizontal-padding: 24px;
@@ -711,7 +776,6 @@ ag-grid-angular {
   --ag-foreground-color: var(--on-surface);
   --ag-secondary-foreground-color: var(--on-surface-variant);
   --ag-primary-color: var(--primary);
-  --ag-alpine-active-color: var(--primary);
 }
 
 .custom-ag-grid ::ng-deep .ag-header-cell-text {
@@ -727,11 +791,8 @@ ag-grid-angular {
   align-items: center;
 }
 
-.custom-ag-grid ::ng-deep .ag-paging-panel {
-  border-top: 1px solid var(--border-subtle);
-  background-color: var(--surface-container-low);
-  padding: 12px 24px;
-}
+
+
 
 /* ============================================
    RESPONSIVE DESIGN
@@ -783,6 +844,17 @@ ag-grid-angular {
   }
   
   .toolbar-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .grid-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .bottom-bar-right {
     width: 100%;
     justify-content: flex-end;
   }

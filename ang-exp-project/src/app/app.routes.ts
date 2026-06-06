@@ -4,6 +4,7 @@ import { Dashboard } from './features/components/dashboard/dashboard';
 import { ExpenseListComponent } from './features/components/expense-list/expense-list';
 import { AddExpenseComponent } from './features/components/add-expense/add-expense';
 import { EditExpenseComponent } from './features/components/edit-expense/edit-expense';
+import { Profile } from './features/components/profile/profile';
 
 import { RegisterComponent } from '../app/page/register-component/register-component';
 import { LoginComponent } from './page/register-component/login-component/login-component';
@@ -26,7 +27,6 @@ export const routes: Routes = [
     component: Layout,
     canActivate: [authGuard],
 
-
     children: [
       //  REDIRECT =>Default page set panna
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -34,9 +34,7 @@ export const routes: Routes = [
       { path: 'expenses', component: ExpenseListComponent },
       { path: 'expenses/add', component: AddExpenseComponent },
       { path: 'expenses/edit/:id', component: EditExpenseComponent },
+      { path: 'profile', component: Profile },
     ],
   },
 ];
-
-
-

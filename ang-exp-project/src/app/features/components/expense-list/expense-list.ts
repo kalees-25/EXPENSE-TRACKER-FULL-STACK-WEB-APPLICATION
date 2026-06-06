@@ -1,18 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // expense-list.component.ts
 
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
@@ -28,7 +13,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { AgGridAngular } from 'ag-grid-angular';
 
-import { ColDef, GridApi, GridReadyEvent, SelectionChangedEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,13 +30,14 @@ import { expenseGridColumnDefs } from '../../../configs/expense-grid.config';
 
 import { expenseDefaultColDef } from '../../../configs/expense-grid.default';
 
-import { PAGE_SIZE_OPTIONS } from '../../../configs/expense-grid.pagination';
 
 import { ExpenseService } from '../../expenses/services/expense-service';
 
 import { AlertService } from '../../../shared/services/alert.service';
 
 import { AuthService } from '../features/auth/auth.service';
+
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50, 100];
 
 // -----------------------------------SWEET-ALERT-----------------------------------
 
@@ -106,6 +92,8 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   readonly expenses$ = this.expenseDataService.expenses$;
 
+  readonly currentUser$ = this.authService.currentUser$;
+
   readonly loading$ = this.expenseDataService.loading$;
 
   readonly error$ = this.expenseDataService.error$;
@@ -114,20 +102,10 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   readonly currentPage$ = this.expenseDataService.currentPage$;
 
-   currentUser$ = this.authService.currentUser$;
-
-
   readonly totalPages$ = combineLatest([
     this.expenseDataService.totalRecords$,
     this.expenseDataService.pageSize$,
-  ]).pipe
-  (map(([total, size]) => 
-    Math.ceil(total / size) || 1));
-
-  // -----------------------------------
-  //  CURRENT SELECTED ROWS STORED IN SERVICE
-  // -----------------------------------
-  readonly selectedExpense$ = this.expenseDataService.selectedExpense$;
+  ]).pipe(map(([total, size]) => Math.ceil(total / size) || 1));
 
   // -----------------------------------
   //  SEARCH TEXT STORED IN SERVICE
@@ -154,13 +132,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-  paginationPageSize =    this.expenseDataService.getPageSizeSnapshot();
-
-  // -----------------------------------
-  //            ROW SELECTION
-  // -----------------------------------
-
-  readonly rowSelection = { mode: 'singleRow' as const };
+  paginationPageSize = this.expenseDataService.getPageSizeSnapshot();
 
   // -----------------------------------
   //            GRID CONTEXT
@@ -175,12 +147,6 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   // -----------------------------------
 
   searchText = '';
-
-  // -----------------------------------
-  // SELECTED ROW
-  // -----------------------------------
-
-  selectedExpense: Expense | null = null;
 
   // -----------------------------------
   // PAGE STATUS
@@ -246,20 +212,6 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     this.searchText = value;
 
     this.searchSubject.next(value);
-  }
-
-  // -----------------------------------
-  // ROW SELECTION
-  // -----------------------------------
-
-  onSelectionChanged(event: SelectionChangedEvent<Expense>): void {
-    const selectedRows = event.api.getSelectedRows();
-
-    const selectedExpense = selectedRows[0] ?? null;
-
-    this.selectedExpense = selectedExpense;
-
-    this.expenseDataService.setSelectedExpense(selectedExpense);
   }
 
   // -----------------------------------
@@ -426,13 +378,6 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
     this.expenseService.loadExpenses();
   }
-
-
-
-
-  onPaginationChanged(): void {
-  this.updatePageStatus();
-}
 
   // -----------------------------------
   // EXPORT FUNCTIONS
