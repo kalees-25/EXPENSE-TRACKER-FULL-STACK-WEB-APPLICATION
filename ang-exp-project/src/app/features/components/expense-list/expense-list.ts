@@ -114,6 +114,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   readonly currentPage$ = this.expenseDataService.currentPage$;
 
+   currentUser$ = this.authService.currentUser$;
 
 
   readonly totalPages$ = combineLatest([

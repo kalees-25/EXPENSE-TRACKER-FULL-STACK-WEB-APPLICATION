@@ -8,12 +8,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 import { environment } from '../../../../../environments/environment';
 
-import {
-  LoginRequest,
-  RegisterRequest,
-  AuthResponse,
-  RegisterResponse,
-} from '../../../../models/auth.model';
+import { LoginRequest, RegisterRequest, AuthResponse, RegisterResponse, UserResponse } from '../../../../models/auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +29,12 @@ export class AuthService {
   // PUBLIC READ-ONLY AUTH STATE
 
   isAuthenticated$ = this.authStateSubject.asObservable();
+
+  // ---------------- CURRENT USER ----------------
+
+  private currentUserSubject = new BehaviorSubject<UserResponse | null>(null);
+
+  currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -66,7 +67,11 @@ export class AuthService {
         tap((response) => {
           this.setToken(response.access_token);
 
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+
           this.authStateSubject.next(true);
+
+          this.currentUserSubject.next(response.user);
         }),
       );
   }
@@ -80,9 +85,13 @@ export class AuthService {
 
     localStorage.removeItem(this.TOKEN_KEY);
 
+    localStorage.removeItem('currentUser');
+
     // UPDATE AUTH STATE
 
     this.authStateSubject.next(false);
+
+    this.currentUserSubject.next(null);
   }
 
   // ==================================================
@@ -130,8 +139,7 @@ export class AuthService {
       // TOKEN EXPIRED
 
       if (!decoded.exp || decoded.exp < currentTime) {
-        
-        localStorage.removeItem(this.TOKEN_KEY)
+        localStorage.removeItem(this.TOKEN_KEY);
 
         return false;
       }
@@ -140,7 +148,7 @@ export class AuthService {
     } catch {
       // INVALID TOKEN
 
-      localStorage.removeItem(this.TOKEN_KEY)
+      localStorage.removeItem(this.TOKEN_KEY);
 
       return false;
     }

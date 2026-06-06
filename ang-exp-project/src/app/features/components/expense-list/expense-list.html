@@ -73,9 +73,19 @@
 
         <div class="user-profile">
           <div class="user-info">
-            <p class="user-name">User</p>
-            <p class="user-role">Enterprise User</p>
+            @if (currentUser$ | async; as user) {
+              <p class="user-name">{{ user.username }}</p>
+              <p class="user-role">{{ user.email }}</p>
+            } @else {
+              <p class="user-name">Guest User</p>
+              <p class="user-role">Not Logged In</p>
+            }
           </div>
+
+          <!-- <p class="user-name">User</p>
+           <p class="user-role">Enterprise User</p> -->
+
+
           <div class="user-avatar">
             <mat-icon>account_circle</mat-icon>
           </div>
@@ -150,12 +160,9 @@
             <span class="stat-label">EXPENSE COUNT</span>
           </div>
           <div class="stat-body">
-            <ng-container *ngIf="expenses$ | async as expenses; else statLoading2">
-              <span class="stat-value">{{ expenses.length | number }}</span>
+            <ng-container *ngIf="{ total: totalRecords$ | async } as vm">
+              <span class="stat-value">{{ vm.total ?? 0 | number }}</span>
             </ng-container>
-            <ng-template #statLoading2>
-              <div class="skeleton-stat"></div>
-            </ng-template>
           </div>
         </div>
 
@@ -202,20 +209,10 @@
               {{ pageStatusText }}
             </span>
           </div>
-          <div class="toolbar-right">
-            <mat-form-field appearance="outline" class="page-size-select">
-              <mat-label>Per page</mat-label>
-              <mat-select [value]="paginationPageSize" (selectionChange)="onPageSizeChange($event)">
-                <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
-                  {{ size }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
         </div>
 
-        <!-- LOADING STATE -->
-        <div *ngIf="loading$ | async" class="loading-state">
+        <!-- LOADING STATE - shown only on initial load (no existing data) -->
+        <div *ngIf="(loading$ | async) && (expenses$ | async)?.length === 0" class="loading-state">
           <mat-spinner diameter="48"></mat-spinner>
           <p>Loading expenses...</p>
         </div>
@@ -232,6 +229,7 @@
         </div>
 
         <!-- EMPTY STATE -->
+
         <ng-container *ngIf="!(loading$ | async) && !(error$ | async)">
           <ng-container *ngIf="expenses$ | async as expenses">
             <div *ngIf="expenses.length === 0" class="empty-state">
@@ -239,8 +237,15 @@
                 <mat-icon>receipt_long</mat-icon>
               </div>
               <h4 class="empty-state-title">No expenses found</h4>
-              <p class="empty-state-text">Start tracking your expenses to see them here.</p>
+              <p class="empty-state-text">
+                {{
+                  searchText
+                    ? 'No expenses match your search. Try different keywords.'
+                    : 'Start tracking your expenses to see them here.'
+                }}
+              </p>
               <button
+                *ngIf="!searchText"
                 mat-raised-button
                 color="primary"
                 routerLink="/expenses/add"
@@ -254,25 +259,69 @@
         </ng-container>
 
         <!-- AG GRID -->
-        <div class="grid-wrapper" [class.hidden]="(loading$ | async) || (error$ | async)">
+        <div class="grid-wrapper" [class.hidden]="error$ | async">
           <ag-grid-angular
+            theme="legacy"
             class="ag-theme-quartz custom-ag-grid"
             [rowData]="expenses$ | async"
             [columnDefs]="columnDefs"
             [defaultColDef]="defaultColDef"
             [loading]="(loading$ | async) ?? false"
-            [pagination]="true"
-            [paginationPageSize]="paginationPageSize"
-            [paginationPageSizeSelector]="pageSizeOptions"
-            [rowSelection]="rowSelection"
             [context]="gridContext"
             [animateRows]="true"
             [suppressCellFocus]="true"
             (gridReady)="onGridReady($event)"
-            (selectionChanged)="onSelectionChanged($event)"
-            (paginationChanged)="onPaginationChanged()"
           >
           </ag-grid-angular>
+        </div>
+
+        <!-- GRID BOTTOM BAR -->
+        <div class="grid-bottom-bar" *ngIf="!(error$ | async)">
+          <ng-container
+            *ngIf="{
+              page: currentPage$ | async,
+              total: totalPages$ | async,
+              loading: loading$ | async,
+            } as vm"
+          >
+            <div class="bottom-bar-left">
+              <mat-form-field appearance="outline" class="page-size-select">
+                <mat-label>Per page</mat-label>
+                <mat-select
+                  [value]="paginationPageSize"
+                  (selectionChange)="onPageSizeChange($event)"
+                >
+                  <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
+                    {{ size }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="bottom-bar-right">
+              <button
+                class="page-nav-btn"
+                (click)="goToPrevPage()"
+                [disabled]="(vm.page ?? 1) === 1 || !!vm.loading"
+                aria-label="Previous page"
+              >
+                <mat-icon>chevron_left</mat-icon>
+                <span>Previous</span>
+              </button>
+
+              <span class="page-indicator">Page {{ vm.page ?? 1 }} of {{ vm.total ?? 1 }}</span>
+
+              <button
+                class="page-nav-btn"
+                (click)="goToNextPage()"
+                [disabled]="(vm.page ?? 1) >= (vm.total ?? 1) || !!vm.loading"
+                aria-label="Next page"
+              >
+                <span>Next</span>
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+          </ng-container>
         </div>
       </section>
     </div>
