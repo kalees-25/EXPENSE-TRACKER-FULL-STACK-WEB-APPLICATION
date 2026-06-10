@@ -40,32 +40,52 @@ export class ExpenseDataService {
 
   readonly selectedExpense$ = this.selectedExpenseSubject.asObservable();
 
-  // ------------------------------------
-  // SEARCH
-  // ------------------------------------
+
+  // ---------------------------------------------------------------------------------
+  //                             SEARCH
+  // ---------------------------------------------------------------------------------
 
   private readonly searchTextSubject = new BehaviorSubject<string>('');
 
   readonly searchText$ = this.searchTextSubject.asObservable();
 
-  // ------------------------------------
-  // PAGINATION
-  // ------------------------------------
+
+
+  // -----------------------------------------------------------------------------------
+  //                          PAGINATION
+  // -----------------------------------------------------------------------------------
 
   private readonly pageSizeSubject = new BehaviorSubject<number>(10);
 
 
 
-  //  OBSERVABLE
+
+
+// ---------------------------------------------------------------------
+  //                         OBSERVABLE
+// -------------------------------------------------------------
   readonly pageSize$ = this.pageSizeSubject.asObservable();
 
   private readonly currentPageSubject = new BehaviorSubject<number>(1);
 
   readonly currentPage$ = this.currentPageSubject.asObservable();
 
+
   private readonly totalRecordsSubject = new BehaviorSubject<number>(0);
 
   readonly totalRecords$ = this.totalRecordsSubject.asObservable();
+
+
+
+  // --------------------------------------------------------------------------------
+//                            TOTAL PAGES
+// --------------------------------------------------------------------------------
+
+private readonly totalPagesSubject =new BehaviorSubject<number>(1);
+
+readonly totalPages$ = this.totalPagesSubject.asObservable();
+
+
 
   // ------------------------------------
   // GRID DATA
@@ -132,6 +152,15 @@ export class ExpenseDataService {
     this.totalRecordsSubject.next(total);
   }
 
+
+    setTotalPages(totalPages: number): void {
+  this.totalPagesSubject.next(totalPages);
+}
+
+getTotalPagesSnapshot(): number {
+  return this.totalPagesSubject.value;
+}
+
   getTotalRecordsSnapshot(): number {
     return this.totalRecordsSubject.value;
   }
@@ -147,4 +176,6 @@ export class ExpenseDataService {
   getSearchTextSnapshot(): string {
     return this.searchTextSubject.value;
   }
+
+
 }

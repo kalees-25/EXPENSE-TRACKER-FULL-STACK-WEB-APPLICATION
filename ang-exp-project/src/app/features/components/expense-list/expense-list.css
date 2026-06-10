@@ -15,7 +15,7 @@
   --surface-container-low: #f6f3f2;
   --surface-container: #f0eded;
   --on-surface: #1c1b1b;
-  --on-surface-variant: #464555;
+  --on-surface-variant: #433c9e;
   --outline: #777587;
   --outline-variant: #c7c4d8;
   --border-subtle: #e6ebf1;
@@ -23,66 +23,46 @@
   --success: #16a34a;
   --secondary: #49607e;
   --tertiary: #974100;
-  
+
   --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  
+
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
-  
+
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  
+
   --sidebar-width: 240px;
-  --header-height: 64px;
-  
+  --header-height: 50px;
+
   display: block;
   min-height: 100vh;
 }
 
 /* === Layout === */
 .expense-list-layout {
-  display: flex;
-  min-height: 100vh;
   background-color: var(--surface-bg);
 }
 
 /* ============================================
    SIDEBAR
    ============================================ */
+/* sidebar: using Tailwind fixed left-0 top-0 h-screen z-50 py-6 flex flex-col */
 .sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
   width: var(--sidebar-width);
-  height: 100vh;
   background-color: var(--surface);
   border-right: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  padding: 24px 0;
-  z-index: 50;
 }
 
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 24px;
-  margin-bottom: 32px;
-}
+/* sidebar-header: using Tailwind flex items-center gap-3 px-6 mb-8 */
 
+/* logo-icon: using Tailwind w-8 h-8 flex items-center justify-center rounded-md */
 .logo-icon {
-  width: 32px;
-  height: 32px;
   background-color: var(--primary);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: var(--on-primary);
 }
 
@@ -92,46 +72,26 @@
   height: 20px;
 }
 
+/* logo-text h1: using Tailwind text-base font-semibold leading-tight m-0 */
 .logo-text h1 {
   font-family: var(--font-geist);
-  font-size: 16px;
-  font-weight: 600;
   color: var(--on-surface);
-  margin: 0;
-  line-height: 1.2;
 }
 
+/* logo-text p: using Tailwind text-xs font-medium opacity-70 m-0 */
 .logo-text p {
   font-family: var(--font-geist);
-  font-size: 11px;
-  font-weight: 500;
   color: var(--on-surface-variant);
-  margin: 0;
-  opacity: 0.7;
 }
 
 /* Sidebar Navigation */
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 0 8px;
-  gap: 4px;
-}
+/* sidebar-nav: using Tailwind flex flex-col gap-1 px-2 flex-1 */
 
+/* nav-item: using Tailwind flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200 text-sm font-normal */
 .nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
   font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 400;
   color: var(--on-surface-variant);
   text-decoration: none;
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
-  cursor: pointer;
   border-left: 3px solid transparent;
 }
 
@@ -152,10 +112,7 @@
   border-left-color: var(--primary);
 }
 
-.nav-spacer {
-  flex: 1;
-}
-
+/* logout-item: using cursor-pointer from nav-item */
 .logout-item {
   color: var(--error);
 }
@@ -167,64 +124,40 @@
 /* ============================================
    MAIN CONTENT
    ============================================ */
+/* main-content: using Tailwind flex flex-col */
 .main-content {
-  flex: 1;
   margin-left: var(--sidebar-width);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  flex: 1;
 }
 
 /* ============================================
    TOP HEADER
    ============================================ */
+/* top-header: using Tailwind flex justify-between items-center sticky top-0 z-40 px-6 py-3 */
 .top-header {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
   background-color: var(--surface-container-lowest);
   border-bottom: 1px solid var(--border-subtle);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   height: var(--header-height);
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+/* header-left: using Tailwind flex items-center gap-4 */
 
-.search-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-}
+/* search-wrapper: using Tailwind relative w-full max-w-md */
 
+/* search-icon: using Tailwind absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-xl */
 .search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
   color: var(--on-surface-variant);
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
 }
 
+/* search-input: using Tailwind w-full rounded-lg border outline-none transition-all duration-200 */
 .search-input {
-  width: 100%;
   padding: 10px 16px 10px 44px;
   font-family: var(--font-inter);
   font-size: 14px;
   background-color: var(--surface-container-low);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  outline: none;
-  transition: all 0.2s ease;
+  border-color: var(--border-subtle);
 }
 
 .search-input:focus {
@@ -236,70 +169,43 @@
   color: var(--outline);
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* header-actions: using Tailwind flex items-center gap-2 */
 
+/* notification-btn: using Tailwind relative */
 .notification-btn {
-  position: relative;
   color: var(--on-surface-variant);
 }
 
+/* notification-badge: using Tailwind absolute top-2 right-2 w-2 h-2 rounded-full */
 .notification-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
   background-color: var(--error);
-  border-radius: 50%;
   border: 2px solid var(--surface-container-lowest);
 }
 
+/* header-divider: using Tailwind w-px h-8 mx-2 */
 .header-divider {
-  width: 1px;
-  height: 32px;
   background-color: var(--border-subtle);
-  margin: 0 8px;
 }
 
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
+/* user-profile: using Tailwind flex items-center gap-3 cursor-pointer */
+/* user-info: using Tailwind text-right */
 
-.user-info {
-  text-align: right;
-}
-
+/* user-name: using Tailwind text-sm font-medium m-0 */
 .user-name {
   font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 500;
   color: var(--on-surface);
-  margin: 0;
 }
 
+/* user-role: using Tailwind text-xs m-0 */
 .user-role {
   font-family: var(--font-geist);
-  font-size: 12px;
   color: var(--on-surface-variant);
-  margin: 0;
 }
 
+/* user-avatar: using Tailwind w-9 h-9 rounded-full flex items-center justify-center border */
 .user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
   background-color: var(--surface-container);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-subtle);
+  border-color: var(--border-subtle);
 }
 
 .user-avatar mat-icon {
@@ -312,47 +218,25 @@
 /* ============================================
    EXPENSE CONTENT
    ============================================ */
-.expense-content {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-}
+/* expense-content: using Tailwind w-full px-6 py-6 mx-auto max-w-7xl */
 
 /* Page Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
+/* page-header: using Tailwind flex justify-between flex-wrap gap-4 items-end mb-6 */
 
+/* page-title: using Tailwind text-3xl font-semibold tracking-tight m-0 mb-1 */
 .page-title {
   font-family: var(--font-geist);
-  font-size: 30px;
-  font-weight: 600;
   line-height: 38px;
-  letter-spacing: -0.01em;
   color: var(--on-surface);
-  margin: 0 0 4px 0;
 }
 
+/* page-subtitle: using Tailwind text-sm font-normal leading-5 m-0 */
 .page-subtitle {
   font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
   color: var(--on-surface-variant);
-  margin: 0;
 }
 
-.page-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+/* page-actions: using Tailwind flex gap-3 flex-wrap */
 
 .action-btn {
   display: flex;
@@ -406,20 +290,16 @@
 /* ============================================
    STATISTICS CARDS
    ============================================ */
+/* stats-grid: using Tailwind grid gap-4 mb-6 */
 .stats-grid {
-  display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
 }
 
+/* stat-card: using Tailwind border rounded-xl p-5 transition-all duration-200 */
 .stat-card {
   background-color: var(--surface-container-lowest);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  padding: 20px;
+  border-color: var(--border-subtle);
   box-shadow: var(--shadow-card);
-  transition: all 0.2s ease;
 }
 
 .stat-card:hover {
@@ -427,146 +307,102 @@
   box-shadow: var(--shadow-md);
 }
 
-.stat-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
+/* stat-header: using Tailwind flex items-center gap-2 mb-3 */
 
+/* stat-icon: using Tailwind w-5 h-5 text-xl */
 .stat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
   color: var(--primary);
 }
 
+/* stat-label: using Tailwind text-xs font-semibold tracking-wider uppercase */
 .stat-label {
   font-family: var(--font-geist);
-  font-size: 11px;
-  font-weight: 600;
   line-height: 14px;
-  letter-spacing: 0.05em;
   color: var(--on-surface-variant);
-  text-transform: uppercase;
 }
 
-.stat-body {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
+/* stat-body: using Tailwind flex items-baseline gap-2 */
 
+/* stat-value: using Tailwind text-2xl font-semibold leading-8 */
 .stat-value {
   font-family: var(--font-geist);
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 32px;
   color: var(--on-surface);
 }
 
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 150px;
-}
+/* text-truncate: using Tailwind overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px] */
 
+/* skeleton-stat: using Tailwind w-24 h-6 rounded-sm */
 .skeleton-stat {
-  width: 100px;
-  height: 24px;
-  background: linear-gradient(90deg, var(--surface-container) 25%, var(--surface-container-low) 50%, var(--surface-container) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-low) 50%,
+    var(--surface-container) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ============================================
    GRID SECTION
    ============================================ */
+/* grid-section: using Tailwind border rounded-xl overflow-visible */
 .grid-section {
   background-color: var(--surface-container-lowest);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  overflow: visible;
+  border-color: var(--border-subtle);
   box-shadow: var(--shadow-card);
 }
 
 /* Grid Toolbar */
+/* grid-toolbar: using Tailwind flex justify-between items-center px-6 py-5 border-b */
 .grid-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border-subtle);
+  border-color: var(--border-subtle);
 }
 
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+/* toolbar-left: using Tailwind flex items-center gap-4 */
 
+/* section-title: using Tailwind text-lg font-medium leading-6 m-0 */
 .section-title {
   font-family: var(--font-geist);
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
   color: var(--on-surface);
-  margin: 0;
 }
 
+/* record-count: using Tailwind text-xs px-3 py-1 rounded-full */
 .record-count {
   font-family: var(--font-inter);
-  font-size: 13px;
   color: var(--on-surface-variant);
   background-color: var(--surface-container);
-  padding: 4px 12px;
-  border-radius: 9999px;
 }
 
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+/* toolbar-right: using Tailwind flex items-center gap-3 */
 
 .page-size-select {
   width: 140px;
 }
 
-
-
 /* ============================================
    PAGINATION CONTROLS
    ============================================ */
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* pagination-controls: using Tailwind flex items-center gap-2 */
 
+/* page-nav-btn: using Tailwind inline-flex items-center gap-1 px-3.5 h-9 border rounded-md cursor-pointer transition-all duration-150 */
 .page-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 14px;
-  height: 36px;
-  border: 1px solid var(--border-subtle);
+  border-color: var(--border-subtle);
   background-color: var(--surface-container-lowest);
   color: var(--on-surface);
-  border-radius: var(--radius-md);
-  cursor: pointer;
   font-family: var(--font-inter);
   font-size: 13px;
   font-weight: 500;
   line-height: 1;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
 }
 
@@ -587,152 +423,90 @@
   cursor: not-allowed;
 }
 
+/* page-indicator: using Tailwind text-xs text-center whitespace-nowrap min-w-[100px] */
 .page-indicator {
   font-family: var(--font-inter);
-  font-size: 13px;
   color: var(--on-surface-variant);
-  white-space: nowrap;
-  min-width: 100px;
-  text-align: center;
 }
 
 /* ============================================
    GRID BOTTOM BAR
    ============================================ */
+/* grid-bottom-bar: using Tailwind flex items-center justify-between px-6 py-3 border-t */
 .grid-bottom-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-  border-top: 1px solid var(--border-subtle);
+  border-color: var(--border-subtle);
   background-color: var(--surface-container-lowest);
 }
 
-.bottom-bar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bottom-bar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+/* bottom-bar-left: using Tailwind flex items-center gap-2 */
+/* bottom-bar-right: using Tailwind flex items-center gap-3 */
 
 /* ============================================
    LOADING STATE
    ============================================ */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  gap: 16px;
-}
+/* loading-state: using Tailwind flex flex-col items-center justify-center gap-4 px-6 py-20 */
 
+/* loading-state p: using Tailwind text-sm m-0 */
 .loading-state p {
   font-family: var(--font-inter);
-  font-size: 14px;
   color: var(--on-surface-variant);
-  margin: 0;
 }
 
 /* ============================================
    ERROR STATE
    ============================================ */
-.error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  text-align: center;
-}
+/* error-state: using Tailwind flex flex-col items-center justify-center text-center px-6 py-20 */
 
+/* error-icon: using Tailwind w-16 h-16 text-6xl mb-4 */
 .error-icon {
-  font-size: 64px;
-  width: 64px;
-  height: 64px;
   color: var(--error);
-  margin-bottom: 16px;
 }
 
+/* error-state h4: using Tailwind text-lg font-medium m-0 mb-2 */
 .error-state h4 {
   font-family: var(--font-geist);
-  font-size: 18px;
-  font-weight: 500;
   color: var(--on-surface);
-  margin: 0 0 8px 0;
 }
 
+/* error-state p: using Tailwind text-sm m-0 mb-6 */
 .error-state p {
   font-family: var(--font-inter);
-  font-size: 14px;
   color: var(--on-surface-variant);
-  margin: 0 0 24px 0;
 }
 
-.error-state button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* error-state button: using Tailwind flex items-center gap-2 from Material */
 
 /* ============================================
    EMPTY STATE
    ============================================ */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  text-align: center;
-}
+/* empty-state: using Tailwind flex flex-col items-center justify-center text-center px-6 py-20 */
 
+/* empty-state-icon: using Tailwind w-20 h-20 rounded-full flex items-center justify-center mb-4 */
 .empty-state-icon {
-  width: 80px;
-  height: 80px;
   background-color: var(--surface-container);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
 }
 
+/* empty-state-icon mat-icon: using Tailwind w-10 h-10 text-4xl opacity-50 */
 .empty-state-icon mat-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
   color: var(--on-surface-variant);
-  opacity: 0.5;
 }
 
+/* empty-state-title: using Tailwind text-lg font-medium m-0 mb-2 */
 .empty-state-title {
   font-family: var(--font-geist);
-  font-size: 18px;
-  font-weight: 500;
   color: var(--on-surface);
-  margin: 0 0 8px 0;
 }
 
+/* empty-state-text: using Tailwind text-sm m-0 mb-6 */
 .empty-state-text {
   font-family: var(--font-inter);
-  font-size: 14px;
   color: var(--on-surface-variant);
-  margin: 0 0 24px 0;
 }
 
+/* empty-state-btn: using Tailwind flex items-center gap-2 rounded-lg from Material */
 .empty-state-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   padding: 10px 24px !important;
   background-color: var(--primary-container) !important;
-  border-radius: var(--radius-lg) !important;
 }
 
 .empty-state-btn mat-icon {
@@ -791,9 +565,6 @@ ag-grid-angular {
   align-items: center;
 }
 
-
-
-
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
@@ -811,38 +582,38 @@ ag-grid-angular {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
   }
-  
+
   .sidebar.open {
     transform: translateX(0);
   }
-  
+
   .main-content {
     margin-left: 0;
   }
-  
+
   .expense-content {
     padding: 16px;
   }
-  
+
   .page-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .page-actions {
     width: 100%;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .grid-toolbar {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .toolbar-right {
     width: 100%;
     justify-content: flex-end;
@@ -865,47 +636,47 @@ ag-grid-angular {
   .top-header {
     padding: 12px 16px;
   }
-  
+
   .search-wrapper {
     display: none;
   }
-  
+
   .user-info {
     display: none;
   }
-  
+
   .expense-content {
     padding: 12px;
   }
-  
+
   .page-title {
     font-size: 24px;
     line-height: 32px;
   }
-  
+
   .page-actions {
     flex-direction: column;
   }
-  
+
   .action-btn,
   .add-expense-btn {
     width: 100%;
     justify-content: center;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .stat-value {
     font-size: 20px;
     line-height: 28px;
   }
-  
+
   .grid-wrapper {
     height: 400px;
   }
-  
+
   .grid-section {
     border-radius: var(--radius-lg);
   }

@@ -2,10 +2,10 @@
      ENTERPRISE EXPENSE MANAGER - Dashboard
      ============================================ -->
 
-<div class="dashboard-layout">
+<div class="dashboard-layout flex min-h-screen">
   <!-- SIDEBAR NAVIGATION -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
+  <aside class="sidebar flex flex-col">
+    <div class="sidebar-header flex items-center gap-3">
       <div class="logo-icon">
         <mat-icon>account_balance_wallet</mat-icon>
       </div>
@@ -15,12 +15,17 @@
       </div>
     </div>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav flex flex-col gap-1">
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
-      <a routerLink="/expenses" routerLinkActive="active" class="nav-item" [routerLinkActiveOptions]="{ exact: true }" >
+      <a
+        routerLink="/expenses"
+        routerLinkActive="active"
+        class="nav-item"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         <mat-icon>receipt_long</mat-icon>
         <span>Expenses</span>
       </a>
@@ -28,16 +33,12 @@
         <mat-icon>add_circle</mat-icon>
         <span>Add Expense</span>
       </a>
-      <a routerLink="/categories" routerLinkActive="active" class="nav-item">
-        <mat-icon>category</mat-icon>
-        <span>Categories</span>
-      </a>
       <a routerLink="/profile" routerLinkActive="active" class="nav-item">
         <mat-icon>person</mat-icon>
         <span>Profile</span>
       </a>
 
-      <div class="nav-spacer"></div>
+      <div class="flex-1"></div>
 
       <a (click)="logout()" class="nav-item logout-item">
         <mat-icon>logout</mat-icon>
@@ -47,15 +48,15 @@
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="main-content">
+  <main class="main-content flex flex-col">
     <!-- HEADER -->
-    <header class="top-header">
+    <header class="top-header flex justify-between items-center">
       <div class="search-wrapper">
         <mat-icon class="search-icon">search</mat-icon>
         <input type="text" class="search-input" placeholder="Search expenses or categories..." />
       </div>
 
-      <div class="header-actions">
+      <div class="header-actions flex items-center gap-2">
         <button mat-icon-button class="notification-btn">
           <mat-icon>notifications</mat-icon>
           <span class="notification-badge"></span>
@@ -63,8 +64,8 @@
 
         <div class="header-divider"></div>
 
-        <div class="user-profile">
-          <div class="user-info">
+        <div class="user-profile flex items-center gap-3">
+          <div class="user-info text-right">
             @if (currentUser$ | async; as user) {
               <p class="user-name">{{ user.username }}</p>
               <p class="user-role">{{ user.email }}</p>
@@ -81,22 +82,23 @@
     </header>
 
     <!-- DASHBOARD CONTENT -->
-    <div class="dashboard-content">
+    <div class="dashboard-content w-full">
       <!-- PAGE HEADER -->
-      <div class="page-header">
+      <div class="page-header flex justify-between flex-wrap gap-4">
         <div class="page-title-section">
           <h2 class="page-title">Financial Overview</h2>
           <p class="page-subtitle">Real-time spend analytics and budget tracking.</p>
         </div>
-        <div class="page-actions">
-          <button mat-stroked-button class="action-btn">
+        <div class="page-actions flex gap-2 flex-wrap">
+          <!-- <button mat-stroked-button class="action-btn">
             <mat-icon>calendar_today</mat-icon>
             <span>Last 30 Days</span>
-          </button>
-          <button mat-stroked-button class="action-btn">
+          </button> -->
+
+          <!-- <button mat-stroked-button class="action-btn">
             <mat-icon>file_download</mat-icon>
             <span>Export</span>
-          </button>
+          </button> -->
           <button
             mat-raised-button
             color="primary"
@@ -112,34 +114,34 @@
       <!-- DASHBOARD DATA -->
       <ng-container *ngIf="vm$ | async as vm; else loadingState">
         <!-- KPI METRICS GRID -->
-        <section class="metrics-grid">
+        <section class="metrics-grid grid gap-4">
           <!-- Total Expense -->
           <div class="metric-card">
             <span class="metric-label">TOTAL EXPENSE</span>
             <h3 class="metric-value">
-              {{ vm.totalExpense | currency: 'INR' : 'symbol' : '1.2-2' }}
+              {{ vm.total_expense | currency: 'INR' : 'symbol' : '1.2-2' }}
             </h3>
           </div>
 
           <!-- Expense Count -->
           <div class="metric-card">
             <span class="metric-label">EXPENSE COUNT</span>
-            <h3 class="metric-value">{{ vm.expenseCount | number }}</h3>
+            <h3 class="metric-value">{{ vm.expense_count | number }}</h3>
           </div>
 
           <!-- Top Category -->
           <div class="metric-card">
             <span class="metric-label">TOP CATEGORY</span>
-            <h3 class="metric-value text-truncate">{{ vm.topCategory }}</h3>
+            <h3 class="metric-value text-truncate">{{ vm.top_category }}</h3>
           </div>
 
           <!-- Highest Expense -->
           <div class="metric-card">
             <span class="metric-label">HIGHEST EXPENSE</span>
             <h3 class="metric-value-sm">
-              {{ vm.topCategoryAmount | currency: 'INR' : 'symbol' : '1.2-2' }}
+              {{ vm.highest_expense | currency: 'INR' : 'symbol' : '1.2-2' }}
             </h3>
-            <p class="metric-subtext">{{ vm.topCategory }}</p>
+            <p class="metric-subtext">{{ vm.top_category }}</p>
           </div>
 
           <!-- Current Month Total -->
@@ -170,39 +172,39 @@
         </section>
 
         <!-- MAIN GRID: Category Breakdown + Recent Expenses -->
-        <div class="main-grid">
+        <div class="main-grid grid gap-6">
           <!-- CATEGORY BREAKDOWN -->
-          <section class="category-section">
+          <section class="category-section flex flex-col gap-4">
             <!-- Category Breakdown Card -->
             <div class="section-card">
               <h3 class="section-title">Category Breakdown</h3>
 
               <ng-container
                 *ngIf="
-                  vm.categoryTotals && (vm.categoryTotals | keyvalue).length > 0;
+                  vm.category_breakdown && vm.category_breakdown.length > 0;
                   else noCategoriesState
                 "
               >
-                <div class="category-list">
+                <div class="category-list flex flex-col gap-4">
                   <div
-                    class="category-item"
+                    class="category-item flex flex-col gap-2"
                     *ngFor="
-                      let category of vm.categoryTotals | keyvalue;
+                      let category of vm.category_breakdown;
                       let i = index;
-                      trackBy: trackByCategory
+                      trackBy: trackByCategoryItem
                     "
                   >
-                    <div class="category-info">
-                      <span class="category-name">{{ category.key }}</span>
+                    <div class="category-info flex justify-between items-center">
+                      <span class="category-name">{{ category.category }}</span>
                       <span class="category-amount">{{
-                        category.value | currency: 'INR' : 'symbol' : '1.0-0'
+                        category.amount | currency: 'INR' : 'symbol' : '1.0-0'
                       }}</span>
                     </div>
                     <div class="category-bar">
                       <div
                         class="category-bar-fill"
                         [style.width.%]="
-                          vm.totalExpense > 0 ? (category.value / vm.totalExpense) * 100 : 0
+                          vm.total_expense > 0 ? (category.amount / vm.total_expense) * 100 : 0
                         "
                         [class]="'bar-color-' + (i % 4)"
                       ></div>
@@ -212,7 +214,7 @@
               </ng-container>
 
               <ng-template #noCategoriesState>
-                <div class="empty-category-state">
+                <div class="empty-category-state flex flex-col items-center">
                   <mat-icon>pie_chart_outline</mat-icon>
                   <p>No category data available</p>
                 </div>
@@ -224,20 +226,20 @@
             <!-- Monthly Summary Card -->
             <div class="section-card">
               <h3 class="section-title">Monthly Summary</h3>
-              <div class="monthly-summary">
-                <div class="summary-row">
+              <div class="monthly-summary flex flex-col gap-3">
+                <div class="summary-row flex justify-between items-center">
                   <span class="summary-label">This Month</span>
                   <span class="summary-value">{{
                     vm.thisMonthTotal | currency: 'INR' : 'symbol' : '1.0-0'
                   }}</span>
                 </div>
-                <div class="summary-row">
+                <div class="summary-row flex justify-between items-center">
                   <span class="summary-label">Last Month</span>
                   <span class="summary-value">{{
                     vm.lastMonthTotal | currency: 'INR' : 'symbol' : '1.0-0'
                   }}</span>
                 </div>
-                <div class="summary-row highlight">
+                <div class="summary-row highlight flex justify-between items-center">
                   <span class="summary-label">Difference</span>
                   <span
                     class="summary-value"
@@ -254,15 +256,15 @@
           </section>
 
           <!-- RECENT EXPENSES TABLE -->
-          <section class="expenses-section">
+          <section class="expenses-section flex flex-col">
             <div class="section-card table-card">
-              <div class="table-header">
+              <div class="table-header flex justify-between items-center">
                 <h3 class="section-title">Recent Expenses</h3>
                 <a routerLink="/expenses" class="view-all-link">View All</a>
               </div>
 
               <ng-container
-                *ngIf="vm.recentExpenses && vm.recentExpenses.length > 0; else emptyState"
+                *ngIf="vm.recent_expenses && vm.recent_expenses.length > 0; else emptyState"
               >
                 <div class="table-wrapper">
                   <table class="expenses-table">
@@ -275,7 +277,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let expense of vm.recentExpenses; trackBy: trackByExpenseId">
+                      <tr *ngFor="let expense of vm.recent_expenses; trackBy: trackByExpenseId">
                         <td class="expense-description">{{ expense.description }}</td>
                         <td class="expense-category">
                           <span class="category-chip">{{
@@ -294,12 +296,12 @@
 
               <!-- EMPTY STATE -->
               <ng-template #emptyState>
-                <div class="empty-state">
+                <div class="empty-state flex flex-col items-center justify-center text-center">
                   <div class="empty-state-icon">
                     <mat-icon>receipt_long</mat-icon>
                   </div>
-                  <h4 class="empty-state-title">No expenses yet</h4>
-                  <p class="empty-state-text">Start tracking your expenses to see them here.</p>
+                  <h4 class="empty-state-title m-0">No expenses yet</h4>
+                  <p class="empty-state-text m-0">Start tracking your expenses to see them here.</p>
                   <button
                     mat-raised-button
                     color="primary"
@@ -318,21 +320,21 @@
 
       <!-- LOADING STATE -->
       <ng-template #loadingState>
-        <section class="metrics-grid">
+        <section class="metrics-grid grid gap-4">
           <div class="metric-card skeleton" *ngFor="let i of [1, 2, 3, 4, 5, 6]">
             <div class="skeleton-label"></div>
             <div class="skeleton-value"></div>
           </div>
         </section>
 
-        <div class="main-grid">
-          <section class="category-section">
+        <div class="main-grid grid gap-6">
+          <section class="category-section flex flex-col gap-4">
             <div class="section-card skeleton-card">
               <div class="skeleton-title"></div>
               <div class="skeleton-bar" *ngFor="let i of [1, 2, 3, 4]"></div>
             </div>
           </section>
-          <section class="expenses-section">
+          <section class="expenses-section flex flex-col">
             <div class="section-card skeleton-card">
               <div class="skeleton-title"></div>
               <div class="skeleton-row" *ngFor="let i of [1, 2, 3, 4, 5]"></div>

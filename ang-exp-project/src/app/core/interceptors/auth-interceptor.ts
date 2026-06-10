@@ -8,11 +8,7 @@ import { environment } from '../../../environments/environment';
 
 const PUBLIC_ROUTES = ['/auth/login', '/auth/register'];
 
-export const authInterceptor: HttpInterceptorFn = (
-  req,
-
-  next,
-) => {
+export const authInterceptor: HttpInterceptorFn = ( req, next,) => {             //req -> CURRENT HTTP-REQUEST
   const authService = inject(AuthService);
 
   const isApiRequest = req.url.startsWith(environment.apiBaseUrl);

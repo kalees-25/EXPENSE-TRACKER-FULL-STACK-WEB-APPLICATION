@@ -42,3 +42,24 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+
+
+
+# Angular Cache
+/.angular
+
+# Dependencies
+/node_modules
+
+# Coverage Reports
+/coverage
+
+# Log Files
+*.log
+libpeerconnection.log
+testem.log
+
+src/environments/environment.ts
+src/environments/environment.prod.ts
+src/environments/environment.development.ts

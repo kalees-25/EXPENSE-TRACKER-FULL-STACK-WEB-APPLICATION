@@ -1,6 +1,6 @@
 // login.component.ts
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -53,7 +53,7 @@ import { AlertService } from '../../../shared/services/alert.service';
 
   styleUrls: ['./login-component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
   // ---------------------------------------------------
   // FORM BUILDER
   // ---------------------------------------------------
@@ -61,6 +61,8 @@ export class LoginComponent {
   private fb = inject(NonNullableFormBuilder);
 
   private alertService = inject(AlertService);
+
+  @ViewChild('emailInput') emailInput?: ElementRef;
 
   hidePassword = true;
 
@@ -94,6 +96,17 @@ export class LoginComponent {
 
     private router: Router,
   ) {}
+
+  // ---------------------------------------------------
+  // LIFECYCLE - AUTO FOCUS EMAIL
+  // ---------------------------------------------------
+
+  ngAfterViewInit(): void {
+    // Auto-focus email input for better UX
+    setTimeout(() => {
+      this.emailInput?.nativeElement?.focus();
+    }, 300);
+  }
 
   // ---------------------------------------------------
   // LOGIN SUBMIT

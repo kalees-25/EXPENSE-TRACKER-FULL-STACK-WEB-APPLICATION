@@ -2,60 +2,77 @@
      ENTERPRISE EXPENSE MANAGER - Expense List
      ============================================ -->
 
-<div class="expense-list-layout">
+<div class="expense-list-layout flex min-h-screen">
   <!-- SIDEBAR NAVIGATION -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-icon">
+  <aside class="sidebar flex flex-col fixed left-0 top-0 h-screen z-50 py-6">
+    <div class="sidebar-header flex items-center gap-3 px-6 mb-8">
+      <div class="logo-icon w-8 h-8 flex items-center justify-center rounded-md">
         <mat-icon>account_balance_wallet</mat-icon>
       </div>
       <div class="logo-text">
-        <h1>Enterprise Expense</h1>
-        <p>Manager</p>
+        <h1 class="text-base font-semibold leading-tight m-0">Enterprise Expense</h1>
+        <p class="text-xs font-medium opacity-70 m-0">Manager</p>
       </div>
     </div>
 
-    <nav class="sidebar-nav">
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+    <nav class="sidebar-nav flex flex-col gap-1 px-2 flex-1">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
         <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
+        <span class="text-sm font-normal">Dashboard</span>
       </a>
-      <a routerLink="/expenses" routerLinkActive="active" class="nav-item">
+      <a
+        routerLink="/expenses"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
         <mat-icon>receipt_long</mat-icon>
-        <span>Expenses</span>
+        <span class="text-sm font-normal">Expenses</span>
       </a>
-      <a routerLink="/expenses/add" routerLinkActive="active" class="nav-item">
+      <a
+        routerLink="/expenses/add"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
         <mat-icon>add_circle</mat-icon>
-        <span>Add Expense</span>
+        <span class="text-sm font-normal">Add Expense</span>
       </a>
-      <a routerLink="/categories" routerLinkActive="active" class="nav-item">
-        <mat-icon>category</mat-icon>
-        <span>Categories</span>
-      </a>
-      <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+      <a
+        routerLink="/profile"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
         <mat-icon>person</mat-icon>
-        <span>Profile</span>
+        <span class="text-sm font-normal">Profile</span>
       </a>
 
-      <div class="nav-spacer"></div>
+      <div class="flex-1"></div>
 
-      <a (click)="onLogout()" class="nav-item logout-item">
+      <a
+        (click)="onLogout()"
+        class="nav-item logout-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
         <mat-icon>logout</mat-icon>
-        <span>Logout</span>
+        <span class="text-sm font-normal">Logout</span>
       </a>
     </nav>
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="main-content">
+  <main class="main-content flex flex-col flex-1 min-h-screen">
     <!-- HEADER -->
-    <header class="top-header">
-      <div class="header-left">
-        <div class="search-wrapper">
-          <mat-icon class="search-icon">search</mat-icon>
+    <header class="top-header flex justify-between items-center sticky top-0 z-40 px-6 py-3">
+      <div class="header-left flex items-center gap-4">
+        <div class="search-wrapper relative w-full max-w-md">
+          <mat-icon class="search-icon absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-xl"
+            >search</mat-icon
+          >
           <input
             type="text"
-            class="search-input"
+            class="search-input w-full rounded-lg border outline-none transition-all duration-200"
             placeholder="Search expenses..."
             [value]="searchText"
             (input)="onSearch($event)"
@@ -63,25 +80,25 @@
         </div>
       </div>
 
-      <div class="header-actions">
-        <button mat-icon-button class="notification-btn">
+      <div class="header-actions flex items-center gap-2">
+        <button mat-icon-button class="notification-btn relative">
           <mat-icon>notifications</mat-icon>
-          <span class="notification-badge"></span>
+          <span class="notification-badge absolute top-2 right-2 w-2 h-2 rounded-full"></span>
         </button>
 
-        <div class="header-divider"></div>
+        <div class="header-divider w-px h-8 mx-2"></div>
 
-        <div class="user-profile">
-          <div class="user-info">
+        <div class="user-profile flex items-center gap-3 cursor-pointer">
+          <div class="user-info text-right">
             @if (currentUser$ | async; as user) {
-              <p class="user-name">{{ user.username }}</p>
-              <p class="user-role">{{ user.email }}</p>
+              <p class="user-name text-sm font-medium m-0">{{ user.username }}</p>
+              <p class="user-role text-xs m-0">{{ user.email }}</p>
             } @else {
-              <p class="user-name">Guest User</p>
-              <p class="user-role">Not Logged In</p>
+              <p class="user-name text-sm font-medium m-0">Guest User</p>
+              <p class="user-role text-xs m-0">Not Logged In</p>
             }
           </div>
-          <div class="user-avatar">
+          <div class="user-avatar w-9 h-9 rounded-full flex items-center justify-center border">
             <mat-icon>account_circle</mat-icon>
           </div>
         </div>
@@ -89,14 +106,16 @@
     </header>
 
     <!-- EXPENSE LIST CONTENT -->
-    <div class="expense-content">
+    <div class="expense-content w-full px-6 py-6 mx-auto max-w-7xl">
       <!-- PAGE HEADER -->
-      <div class="page-header">
+      <div class="page-header flex justify-between flex-wrap gap-4 items-end mb-6">
         <div class="page-title-section">
-          <h2 class="page-title">Expenses</h2>
-          <p class="page-subtitle">Manage and track your spending with high-density precision.</p>
+          <h2 class="page-title text-3xl font-semibold tracking-tight m-0 mb-1">Expenses</h2>
+          <p class="page-subtitle text-sm font-normal leading-5 m-0">
+            Manage and track your spending with high-density precision.
+          </p>
         </div>
-        <div class="page-actions">
+        <div class="page-actions flex gap-3 flex-wrap">
           <!-- EXPORT DROPDOWN -->
           <button mat-stroked-button [matMenuTriggerFor]="exportMenu" class="action-btn">
             <mat-icon>file_download</mat-icon>
@@ -131,93 +150,117 @@
       </div>
 
       <!-- STATISTICS CARDS -->
-      <section class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-header">
-            <mat-icon class="stat-icon">payments</mat-icon>
-            <span class="stat-label">TOTAL EXPENSES</span>
+      <section class="stats-grid grid gap-4 mb-6">
+        <div class="stat-card border rounded-xl p-5 transition-all duration-200">
+          <div class="stat-header flex items-center gap-2 mb-3">
+            <mat-icon class="stat-icon w-5 h-5 text-xl">payments</mat-icon>
+            <span class="stat-label text-xs font-semibold tracking-wider uppercase"
+              >TOTAL EXPENSES</span
+            >
           </div>
-          <div class="stat-body">
+          <div class="stat-body flex items-baseline gap-2">
             <ng-container *ngIf="expenses$ | async as expenses; else statLoading">
-              <span class="stat-value">{{
+              <span class="stat-value text-2xl font-semibold leading-8">{{
                 getTotalExpenses(expenses) | currency: 'INR' : 'symbol' : '1.2-2'
               }}</span>
             </ng-container>
             <ng-template #statLoading>
-              <div class="skeleton-stat"></div>
+              <div class="skeleton-stat w-24 h-6 rounded-sm"></div>
             </ng-template>
           </div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-header">
-            <mat-icon class="stat-icon">receipt</mat-icon>
-            <span class="stat-label">EXPENSE COUNT</span>
+        <div class="stat-card border rounded-xl p-5 transition-all duration-200">
+          <div class="stat-header flex items-center gap-2 mb-3">
+            <mat-icon class="stat-icon w-5 h-5 text-xl">receipt</mat-icon>
+            <span class="stat-label text-xs font-semibold tracking-wider uppercase"
+              >EXPENSE COUNT</span
+            >
           </div>
-          <div class="stat-body">
+          <div class="stat-body flex items-baseline gap-2">
             <ng-container *ngIf="{ total: totalRecords$ | async } as vm">
-              <span class="stat-value">{{ vm.total ?? 0 | number }}</span>
+              <span class="stat-value text-2xl font-semibold leading-8">{{
+                vm.total ?? 0 | number
+              }}</span>
             </ng-container>
           </div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-header">
-            <mat-icon class="stat-icon">category</mat-icon>
-            <span class="stat-label">TOP CATEGORY</span>
+        <div class="stat-card border rounded-xl p-5 transition-all duration-200">
+          <div class="stat-header flex items-center gap-2 mb-3">
+            <mat-icon class="stat-icon w-5 h-5 text-xl">category</mat-icon>
+            <span class="stat-label text-xs font-semibold tracking-wider uppercase"
+              >TOP CATEGORY</span
+            >
           </div>
-          <div class="stat-body">
+          <div class="stat-body flex items-baseline gap-2">
             <ng-container *ngIf="expenses$ | async as expenses; else statLoading3">
-              <span class="stat-value text-truncate">{{ getTopCategory(expenses) }}</span>
+              <span
+                class="stat-value text-2xl font-semibold leading-8 overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]"
+                >{{ getTopCategory(expenses) }}</span
+              >
             </ng-container>
             <ng-template #statLoading3>
-              <div class="skeleton-stat"></div>
+              <div class="skeleton-stat w-24 h-6 rounded-sm"></div>
             </ng-template>
           </div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-header">
-            <mat-icon class="stat-icon">calendar_month</mat-icon>
-            <span class="stat-label">THIS MONTH</span>
+        <div class="stat-card border rounded-xl p-5 transition-all duration-200">
+          <div class="stat-header flex items-center gap-2 mb-3">
+            <mat-icon class="stat-icon w-5 h-5 text-xl">calendar_month</mat-icon>
+            <span class="stat-label text-xs font-semibold tracking-wider uppercase"
+              >THIS MONTH</span
+            >
           </div>
-          <div class="stat-body">
+          <div class="stat-body flex items-baseline gap-2">
             <ng-container *ngIf="expenses$ | async as expenses; else statLoading4">
-              <span class="stat-value">{{
+              <span class="stat-value text-2xl font-semibold leading-8">{{
                 getThisMonthTotal(expenses) | currency: 'INR' : 'symbol' : '1.2-2'
               }}</span>
             </ng-container>
             <ng-template #statLoading4>
-              <div class="skeleton-stat"></div>
+              <div class="skeleton-stat w-24 h-6 rounded-sm"></div>
             </ng-template>
           </div>
         </div>
       </section>
 
       <!-- AG GRID SECTION -->
-      <section class="grid-section">
+      <section class="grid-section border rounded-xl overflow-visible">
         <!-- GRID TOOLBAR -->
-        <div class="grid-toolbar">
-          <div class="toolbar-left">
-            <h3 class="section-title">All Expenses</h3>
-            <span class="record-count" *ngIf="!(loading$ | async)">
+        <div class="grid-toolbar flex justify-between items-center px-6 py-5 border-b">
+          <div class="toolbar-left flex items-center gap-4">
+            <h3 class="section-title text-lg font-medium leading-6 m-0">All Expenses</h3>
+            <span class="record-count text-xs px-3 py-1 rounded-full" *ngIf="!(loading$ | async)">
               {{ pageStatusText }}
             </span>
           </div>
         </div>
 
         <!-- LOADING STATE - shown only on initial load (no existing data) -->
-        <div *ngIf="(loading$ | async) && (expenses$ | async)?.length === 0" class="loading-state">
+        <div
+          *ngIf="(loading$ | async) && (expenses$ | async)?.length === 0"
+          class="loading-state flex flex-col items-center justify-center gap-4 px-6 py-20"
+        >
           <mat-spinner diameter="48"></mat-spinner>
-          <p>Loading expenses...</p>
+          <p class="text-sm m-0">Loading expenses...</p>
         </div>
 
         <!-- ERROR STATE -->
-        <div *ngIf="error$ | async as error" class="error-state">
-          <mat-icon class="error-icon">error_outline</mat-icon>
-          <h4>Failed to load expenses</h4>
-          <p>{{ error }}</p>
-          <button mat-raised-button color="primary" (click)="loadExpenses()">
+        <div
+          *ngIf="error$ | async as error"
+          class="error-state flex flex-col items-center justify-center text-center px-6 py-20"
+        >
+          <mat-icon class="error-icon w-16 h-16 text-6xl mb-4">error_outline</mat-icon>
+          <h4 class="text-lg font-medium m-0 mb-2">Failed to load expenses</h4>
+          <p class="text-sm m-0 mb-6">{{ error }}</p>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="loadExpenses()"
+            class="flex items-center gap-2"
+          >
             <mat-icon>refresh</mat-icon>
             Try Again
           </button>
@@ -226,12 +269,17 @@
         <!-- EMPTY STATE -->
         <ng-container *ngIf="!(loading$ | async) && !(error$ | async)">
           <ng-container *ngIf="expenses$ | async as expenses">
-            <div *ngIf="expenses.length === 0" class="empty-state">
-              <div class="empty-state-icon">
-                <mat-icon>receipt_long</mat-icon>
+            <div
+              *ngIf="expenses.length === 0"
+              class="empty-state flex flex-col items-center justify-center text-center px-6 py-20"
+            >
+              <div
+                class="empty-state-icon w-20 h-20 rounded-full flex items-center justify-center mb-4"
+              >
+                <mat-icon class="w-10 h-10 text-4xl opacity-50">receipt_long</mat-icon>
               </div>
-              <h4 class="empty-state-title">No expenses found</h4>
-              <p class="empty-state-text">
+              <h4 class="empty-state-title text-lg font-medium m-0 mb-2">No expenses found</h4>
+              <p class="empty-state-text text-sm m-0 mb-6">
                 {{
                   searchText
                     ? 'No expenses match your search. Try different keywords.'
@@ -243,7 +291,7 @@
                 mat-raised-button
                 color="primary"
                 routerLink="/expenses/add"
-                class="empty-state-btn"
+                class="empty-state-btn flex items-center gap-2 rounded-lg"
               >
                 <mat-icon>add</mat-icon>
                 Add Your First Expense
@@ -270,7 +318,10 @@
         </div>
 
         <!-- GRID BOTTOM BAR -->
-        <div class="grid-bottom-bar" *ngIf="!(error$ | async)">
+        <div
+          class="grid-bottom-bar flex items-center justify-between px-6 py-3 border-t"
+          *ngIf="!(error$ | async)"
+        >
           <ng-container
             *ngIf="{
               page: currentPage$ | async,
@@ -278,7 +329,7 @@
               loading: loading$ | async,
             } as vm"
           >
-            <div class="bottom-bar-left">
+            <div class="bottom-bar-left flex items-center gap-2">
               <mat-form-field appearance="outline" class="page-size-select">
                 <mat-label>Per page</mat-label>
                 <mat-select
@@ -292,26 +343,28 @@
               </mat-form-field>
             </div>
 
-            <div class="bottom-bar-right">
+            <div class="bottom-bar-right flex items-center gap-3">
               <button
-                class="page-nav-btn"
+                class="page-nav-btn inline-flex items-center gap-1 px-3.5 h-9 border rounded-md cursor-pointer transition-all duration-150"
                 (click)="goToPrevPage()"
                 [disabled]="(vm.page ?? 1) === 1 || !!vm.loading"
                 aria-label="Previous page"
               >
                 <mat-icon>chevron_left</mat-icon>
-                <span>Previous</span>
+                <span class="text-xs font-medium">Previous</span>
               </button>
 
-              <span class="page-indicator">Page {{ vm.page ?? 1 }} of {{ vm.total ?? 1 }}</span>
+              <span class="page-indicator text-xs text-center whitespace-nowrap min-w-[100px]"
+                >Page {{ vm.page ?? 1 }} of {{ vm.total ?? 1 }}</span
+              >
 
               <button
-                class="page-nav-btn"
+                class="page-nav-btn inline-flex items-center gap-1 px-3.5 h-9 border rounded-md cursor-pointer transition-all duration-150"
                 (click)="goToNextPage()"
                 [disabled]="(vm.page ?? 1) >= (vm.total ?? 1) || !!vm.loading"
                 aria-label="Next page"
               >
-                <span>Next</span>
+                <span class="text-xs font-medium">Next</span>
                 <mat-icon>chevron_right</mat-icon>
               </button>
             </div>

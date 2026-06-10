@@ -10,6 +10,9 @@ export interface Expense {
 export interface ExpenseListResponse {
   items: Expense[];
   total: number;
+  total_pages: number;
 }
+
+
 
 

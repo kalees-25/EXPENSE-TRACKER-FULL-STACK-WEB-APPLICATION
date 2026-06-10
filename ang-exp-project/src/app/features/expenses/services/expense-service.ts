@@ -37,12 +37,15 @@ export class ExpenseService {
         next: (response) => {
           this.expenseDataService.setExpenses(response.items);
           this.expenseDataService.setTotalRecords(response.total);
+            this.expenseDataService.setTotalPages(response.total_pages
+  );
         },
         error: () => {
           this.expenseDataService.setError('Failed to load expenses');
         },
       });
   }
+
 
   // -------ADD EXPENSE-------
   addExpense(expense: Expense): Observable<Expense> {

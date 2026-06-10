@@ -102,10 +102,8 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   readonly currentPage$ = this.expenseDataService.currentPage$;
 
-  readonly totalPages$ = combineLatest([
-    this.expenseDataService.totalRecords$,
-    this.expenseDataService.pageSize$,
-  ]).pipe(map(([total, size]) => Math.ceil(total / size) || 1));
+  
+readonly totalPages$ = this.expenseDataService.totalPages$
 
   // -----------------------------------
   //  SEARCH TEXT STORED IN SERVICE
@@ -242,7 +240,6 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       'Delete Expense',
       `"${expense.description}" will be removed permanently.`,
     );
-
     if (!result.isConfirmed) {
       return;
     }
@@ -289,7 +286,11 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const totalPages = Math.ceil(totalRows / pageSize);
+    // const totalPages = Math.ceil(totalRows / pageSize);
+
+    const totalPages = this.expenseDataService.getTotalPagesSnapshot();
+
+    
     const startRow = (currentPage - 1) * pageSize + 1;
     const endRow = Math.min(currentPage * pageSize, totalRows);
 
