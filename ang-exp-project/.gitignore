@@ -60,6 +60,12 @@ Thumbs.db
 libpeerconnection.log
 testem.log
 
-src/environments/environment.ts
-src/environments/environment.prod.ts
-src/environments/environment.development.ts
+
+node_modules/
+sweetalert2/
+package.json
+package-lock.json
+LOGIN_COMPONENT_IMPROVEMENTS.md
+UI-DESIGN-SYSTEM.md
+EXPENSE-TRACKER-PROJECT-REVIEW-GUIDE.md
+DASHBOARD-COMPONENT-EXPLAINED.md
