@@ -1,0 +1,157 @@
+<div class="login-page">
+  <!-- Background Decorative Elements -->
+  <div class="bg-decoration" aria-hidden="true">
+    <div class="bg-blob bg-blob-primary"></div>
+    <div class="bg-blob bg-blob-secondary"></div>
+  </div>
+
+  <!-- Login Container -->
+  <main class="login-container" role="main">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo-wrapper">
+        <div class="logo-icon" aria-hidden="true">
+          <mat-icon>account_balance_wallet</mat-icon>
+        </div>
+        <span class="logo-text">Expense Tracker</span>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <article class="login-card">
+      <header class="card-header">
+        <h1 class="card-title">Welcome back</h1>
+        <p class="card-subtitle">Smart expense tracking for everyday spending.</p>
+      </header>
+
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        class="login-form"
+        aria-label="Login form"
+        novalidate
+      >
+        <!-- EMAIL FIELD -->
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="app-form-field">
+            <mat-label>Email Address</mat-label>
+            <input
+              #emailInput
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="name@company.com"
+              autocomplete="email"
+              required
+              aria-required="true"
+            />
+            @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+              <mat-error role="alert" aria-live="polite">
+                @if (loginForm.get('email')?.hasError('required')) {
+                  Email is required
+                } @else if (loginForm.get('email')?.hasError('email')) {
+                  Please enter a valid email address
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- PASSWORD FIELD -->
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="app-form-field">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+              aria-required="true"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePassword()"
+              class="password-toggle-btn"
+              [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
+              [attr.aria-pressed]="!hidePassword"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+            @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+              <mat-error role="alert" aria-live="polite">
+                @if (loginForm.get('password')?.hasError('required')) {
+                  Password is required
+                } @else if (loginForm.get('password')?.hasError('minlength')) {
+                  Password must be at least 6 characters
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- REMEMBER ME -->
+        <div class="remember-me-wrapper">
+          <mat-checkbox class="remember-checkbox" color="primary">
+            Remember this device
+          </mat-checkbox>
+        </div>
+
+        <!-- ERROR MESSAGE -->
+        @if (errorMsg) {
+          <div class="error-banner" role="alert" aria-live="assertive">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            <span>{{ errorMsg }}</span>
+          </div>
+        }
+
+        <!-- LOGIN BUTTON -->
+        <button
+          mat-flat-button
+          type="submit"
+          color="primary"
+          class="login-button"
+          [disabled]="loading || loginForm.invalid"
+        >
+          @if (loading) {
+            <span class="button-content">
+              <mat-icon class="spin-animation">refresh</mat-icon>
+              <span>Signing in...</span>
+            </span>
+          } @else {
+            <span class="button-content">
+              <span>Sign In</span>
+              <mat-icon>arrow_forward</mat-icon>
+            </span>
+          }
+        </button>
+      </form>
+
+      <!-- CREATE ACCOUNT LINK -->
+      <div class="create-account-section">
+        <p>
+          Don't have an account?
+          <a routerLink="/register" class="create-account-link">Create Account</a>
+        </p>
+      </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="login-footer">
+      <div class="footer-icons" aria-label="Security features">
+        <mat-icon class="footer-icon" aria-label="Secure encryption">lock</mat-icon>
+        <mat-icon class="footer-icon" aria-label="Cloud synchronized">cloud_done</mat-icon>
+        <mat-icon class="footer-icon" aria-label="Audit ready">verified_user</mat-icon>
+      </div>
+      <nav class="footer-links" aria-label="Legal links">
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <span class="footer-separator" aria-hidden="true">•</span>
+        <a href="#" class="footer-link">Terms of Service</a>
+      </nav>
+      <p class="footer-copyright">© 2026 Expense Tracker. All rights reserved.</p>
+    </footer>
+  </main>
+</div>

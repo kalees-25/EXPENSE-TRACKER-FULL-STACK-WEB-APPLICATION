@@ -1,0 +1,662 @@
+/* ============================================
+   LOGIN COMPONENT - Production-Ready Enterprise Auth
+   Design System: Modern Enterprise Ledger
+   Architecture: Angular 21 + Material 3
+   ============================================ */
+
+/* === CSS Variables === */
+:host {
+  /* Color System */
+  --primary: #493ee5;
+  --primary-container: #635bff;
+  --primary-hover: #3d32c9;
+  --on-primary: #ffffff;
+
+  --surface: #fcf9f8;
+  --surface-container-lowest: #ffffff;
+  --surface-bright: #fcf9f8;
+
+  --on-surface: #1c1b1b;
+  --on-surface-variant: #464555;
+
+  --outline: #777587;
+  --outline-variant: #c7c4d8;
+
+  --error: #ba1a1a;
+  --error-container: rgba(186, 26, 26, 0.08);
+  --on-error-container: #ba1a1a;
+
+  --secondary: #49607e;
+
+  /* Typography */
+  --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Elevation System */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 4px 12px rgba(99, 91, 255, 0.15);
+  --shadow-focus: 0 0 0 3px rgba(99, 91, 255, 0.2);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   PAGE LAYOUT
+   ============================================ */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--surface);
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================
+   BACKGROUND DECORATIONS
+   ============================================ */
+.bg-decoration {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.8;
+  will-change: transform;
+}
+
+.bg-blob-primary {
+  top: -10%;
+  left: -10%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(99, 91, 255, 0.08) 0%, rgba(99, 91, 255, 0.02) 70%);
+}
+
+.bg-blob-secondary {
+  bottom: -10%;
+  right: -10%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(73, 96, 126, 0.08) 0%, rgba(73, 96, 126, 0.02) 70%);
+}
+
+/* ============================================
+   LOGIN CONTAINER
+   ============================================ */
+.login-container {
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .login-container {
+    animation: none;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   LOGO SECTION
+   ============================================ */
+.logo-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--primary-container) 0%, var(--primary) 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-primary);
+  box-shadow: 0 2px 8px rgba(99, 91, 255, 0.2);
+}
+
+.logo-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.logo-text {
+  font-family: var(--font-geist);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--on-surface);
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   LOGIN CARD
+   ============================================ */
+.login-card {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--transition-base);
+}
+
+/* ============================================
+   CARD HEADER
+   ============================================ */
+.card-header {
+  margin-bottom: 28px;
+}
+
+.card-title {
+  font-family: var(--font-geist);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+  margin: 0 0 8px 0;
+}
+
+.card-subtitle {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+/* ============================================
+   FORM
+   ============================================ */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ============================================
+   FORM FIELD - Production-Ready Material Styling
+   NO ::ng-deep - Uses Material's Public API
+   ============================================ */
+.form-field-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom form field styling using CSS custom properties */
+.app-form-field {
+  width: 100%;
+  font-family: var(--font-inter);
+}
+
+/* Style the form field using standard CSS (no ::ng-deep) */
+.app-form-field .mat-mdc-form-field-flex {
+  min-height: 48px;
+}
+
+.app-form-field .mat-mdc-text-field-wrapper {
+  background-color: var(--surface-bright);
+}
+
+/* Focus state styling */
+.app-form-field:focus-within {
+  --mdc-outlined-text-field-focus-outline-color: var(--primary);
+  --mdc-outlined-text-field-focus-label-text-color: var(--primary);
+}
+
+/* ============================================
+   PASSWORD TOGGLE BUTTON
+   ============================================ */
+.password-toggle-btn {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  color: var(--on-surface-variant);
+  transition: color var(--transition-fast);
+}
+
+.password-toggle-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.password-toggle-btn:hover {
+  color: var(--on-surface);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   REMEMBER ME CHECKBOX
+   ============================================ */
+.remember-me-wrapper {
+  display: flex;
+  align-items: center;
+  margin: -4px 0;
+}
+
+.remember-checkbox {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  color: var(--on-surface-variant);
+}
+
+/* ============================================
+   ERROR BANNER
+   ============================================ */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: var(--error-container);
+  border: 1px solid rgba(186, 26, 26, 0.2);
+  border-radius: var(--radius-lg);
+  color: var(--on-error-container);
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.error-banner mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--error);
+}
+
+.error-banner span {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  flex: 1;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================
+   LOGIN BUTTON - Production Ready
+   ============================================ */
+.login-button {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 24px;
+  font-family: var(--font-geist);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-lg) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.login-button .button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-button:not(:disabled):hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+
+.login-button:not(:disabled):active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.login-button:focus-visible {
+  box-shadow:
+    var(--shadow-focus),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.login-button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   CREATE ACCOUNT SECTION
+   ============================================ */
+.create-account-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--outline-variant);
+  text-align: center;
+}
+
+.create-account-section p {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+.create-account-link {
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  margin-left: 4px;
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid transparent;
+}
+
+.create-account-link:hover {
+  color: var(--primary-hover);
+  border-bottom-color: var(--primary-hover);
+}
+
+.create-account-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.login-footer {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-icons {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: var(--on-surface-variant);
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+}
+
+.footer-icon:hover {
+  opacity: 1;
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-link {
+  font-family: var(--font-geist);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  color: var(--outline);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  cursor: pointer;
+}
+
+.footer-link:hover {
+  color: var(--primary);
+}
+
+.footer-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.footer-separator {
+  font-family: var(--font-geist);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--outline);
+  user-select: none;
+}
+
+.footer-copyright {
+  font-family: var(--font-geist);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--outline);
+  text-align: center;
+  margin: 0;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - Mobile First Approach
+   ============================================ */
+
+/* Base styles are mobile (defined above) */
+
+/* Tablet: 481px - 768px */
+@media (min-width: 481px) {
+  .login-card {
+    padding: 28px;
+  }
+
+  .card-title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .footer-icons {
+    gap: 32px;
+  }
+}
+
+/* Desktop: 769px+ */
+@media (min-width: 769px) {
+  .login-card {
+    padding: 32px;
+  }
+
+  .card-title {
+    font-size: 30px;
+    line-height: 38px;
+  }
+
+  .logo-section {
+    margin-bottom: 32px;
+  }
+
+  .login-footer {
+    margin-top: 40px;
+  }
+}
+
+/* Small Mobile: max 480px */
+@media (max-width: 480px) {
+  .login-page {
+    justify-content: flex-start;
+    padding-top: max(40px, env(safe-area-inset-top));
+  }
+
+  .login-container {
+    max-width: 100%;
+  }
+
+  .logo-section {
+    margin-bottom: 24px;
+  }
+
+  .logo-text {
+    font-size: 20px;
+  }
+
+  .login-card {
+    padding: 24px 20px;
+    border-radius: var(--radius-lg);
+  }
+
+  .card-header {
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .login-button {
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  .footer-icons {
+    gap: 24px;
+  }
+
+  .footer-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .login-footer {
+    margin-top: 32px;
+    gap: 16px;
+  }
+}
+
+/* Focus Visible Styles - Keyboard Navigation */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .login-card {
+    border-width: 2px;
+  }
+
+  .error-banner {
+    border-width: 2px;
+  }
+}
+
+/* Dark Mode Support - Future Enhancement */
+/* @media (prefers-color-scheme: dark) {
+  :host {
+    --primary: #7c6fff;
+    --surface: #1c1b1b;
+    --on-surface: #fcf9f8;
+  }
+} */

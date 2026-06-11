@@ -1,0 +1,298 @@
+<!-- ============================================
+     ENTERPRISE EXPENSE MANAGER - Add Expense
+     ============================================ -->
+
+<div class="add-expense-layout flex min-h-screen">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar fixed left-0 top-0 h-screen flex flex-col z-50 py-6">
+    <div class="sidebar-header flex items-center gap-3 px-6 mb-8">
+      <div class="logo-icon w-8 h-8 flex items-center justify-center rounded-md">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+      <div class="logo-text">
+        <h1 class="text-base font-semibold leading-tight m-0">Enterprise Expense</h1>
+        <p class="text-xs font-medium opacity-70 m-0">Manager</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav flex flex-col flex-1 px-2 gap-1">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
+        <mat-icon>dashboard</mat-icon>
+        <span class="text-sm font-normal">Dashboard</span>
+      </a>
+      <a
+        routerLink="/expenses"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon>receipt_long</mat-icon>
+        <span class="text-sm font-normal">Expenses</span>
+      </a>
+      <a
+        routerLink="/expenses/add"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
+        <mat-icon>add_circle</mat-icon>
+        <span class="text-sm font-normal">Add Expense</span>
+      </a>
+      <!-- <a
+        routerLink="/categories"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
+        <mat-icon>category</mat-icon>
+        <span class="text-sm font-normal">Categories</span>
+      </a> -->
+      <a
+        routerLink="/profile"
+        routerLinkActive="active"
+        class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
+        <mat-icon>person</mat-icon>
+        <span class="text-sm font-normal">Profile</span>
+      </a>
+
+      <div class="flex-1"></div>
+
+      <a
+        (click)="onLogout()"
+        class="nav-item logout-item flex items-center gap-3 px-4 py-2.5 rounded-md cursor-pointer transition-all duration-200"
+      >
+        <mat-icon>logout</mat-icon>
+        <span class="text-sm font-normal">Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content flex flex-col flex-1 min-h-screen">
+    <!-- TOP HEADER -->
+    <header class="top-header flex justify-end items-center sticky top-0 z-40 px-6 py-3">
+      <!-- <div class="search-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" class="search-input" placeholder="Search expenses or categories..." />
+      </div> -->
+
+      <div class="header-actions flex items-center gap-2">
+        <button mat-icon-button class="notification-btn relative">
+          <mat-icon>notifications</mat-icon>
+          <span class="notification-badge absolute top-2 right-2 w-2 h-2 rounded-full"></span>
+        </button>
+
+        <div class="header-divider w-px h-8 mx-2"></div>
+
+        <div class="user-profile-header flex items-center gap-3 cursor-pointer">
+          <div class="user-info text-right">
+            @if (currentUser$ | async; as user) {
+              <p class="user-name text-sm font-medium m-0">{{ user.username }}</p>
+              <p class="user-role text-xs m-0">{{ user.email }}</p>
+            } @else {
+              <p class="user-name text-sm font-medium m-0">Guest User</p>
+              <p class="user-role text-xs m-0">Not Logged In</p>
+            }
+          </div>
+          <div class="user-avatar w-9 h-9 rounded-full flex items-center justify-center border">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ADD EXPENSE FORM CONTENT -->
+    <div class="form-content w-full px-6 py-6 mx-auto max-w-6xl">
+      <!-- PAGE HEADER -->
+      <header class="page-header flex items-center gap-4 mb-8">
+        <div
+          class="header-icon-wrap flex items-center justify-center w-12 h-12 rounded-xl flex-shrink-0"
+        >
+          <mat-icon>add_card</mat-icon>
+        </div>
+        <div>
+          <h1 class="page-title text-2xl font-bold tracking-tight m-0 mb-1">Add Expense</h1>
+          <p class="page-subtitle text-sm m-0 leading-relaxed">
+            Record and categorize a new expense for accurate tracking and reporting.
+          </p>
+        </div>
+      </header>
+
+      <!-- CONTENT GRID -->
+      <div class="content-grid grid gap-6 items-start">
+        <!-- Form Card -->
+        <div class="form-card rounded-xl border overflow-hidden">
+          <div class="form-card-header flex items-center gap-3 px-6 py-5 border-b">
+            <mat-icon>receipt_long</mat-icon>
+            <div>
+              <h2 class="text-sm font-semibold m-0 mb-0.5">Expense Details</h2>
+              <p class="text-xs m-0">Fill in the fields below to record this expense.</p>
+            </div>
+          </div>
+
+          <form
+            [formGroup]="form"
+            (ngSubmit)="onSubmit()"
+            class="expense-form flex flex-col p-6"
+            novalidate
+          >
+            <!-- Row: Date + Category -->
+            <div class="form-row-2col grid gap-4">
+              <!-- Date -->
+              <mat-form-field appearance="outline" class="field-full w-full">
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" />
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error>
+                  @if (form.get('date')?.hasError('required')) {
+                    Date is required
+                  }
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Category -->
+              <mat-form-field appearance="outline" class="field-full w-full">
+                <mat-label>Category</mat-label>
+                <mat-icon matPrefix>label_outline</mat-icon>
+                <mat-select formControlName="category">
+                  @for (cat of categories; track cat.value) {
+                    <mat-option [value]="cat.value">
+                      <span class="category-option flex items-center gap-2">
+                        <mat-icon>{{ cat.icon }}</mat-icon>
+                        {{ cat.label }}
+                      </span>
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-error>
+                  @if (form.get('category')?.hasError('required')) {
+                    Category is required
+                  }
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Description -->
+            <mat-form-field appearance="outline" class="field-full w-full">
+              <mat-label>Description</mat-label>
+              <mat-icon matPrefix>notes</mat-icon>
+              <input
+                matInput
+                formControlName="description"
+                placeholder="E.g., Lunch with colleagues"
+                maxlength="100"
+              />
+              <mat-hint align="end">{{ form.get('description')?.value?.length || 0 }}/100</mat-hint>
+              <mat-error>
+                @if (form.get('description')?.hasError('required')) {
+                  Description is required
+                } @else if (form.get('description')?.hasError('minlength')) {
+                  Minimum 3 characters required
+                } @else if (form.get('description')?.hasError('maxlength')) {
+                  Maximum 100 characters allowed
+                }
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Amount -->
+            <mat-form-field appearance="outline" class="field-full w-full">
+              <mat-label>Amount</mat-label>
+              <span matTextPrefix>₹&nbsp;</span>
+              <input matInput type="number" formControlName="amount" placeholder="0.00" min="1" />
+              <mat-icon matSuffix>payments</mat-icon>
+              <mat-error>
+                @if (form.get('amount')?.hasError('required')) {
+                  Amount is required
+                } @else if (form.get('amount')?.hasError('min')) {
+                  Amount must be at least ₹1
+                }
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Error Banner -->
+            @if (errorMsg) {
+              <div
+                class="error-banner flex items-center gap-2 px-4 py-3 rounded-md mt-1"
+                role="alert"
+              >
+                <mat-icon class="w-4.5 h-4.5 text-lg flex-shrink-0">error_outline</mat-icon>
+                <span class="text-sm">{{ errorMsg }}</span>
+              </div>
+            }
+
+            <!-- Form Actions -->
+            <div class="form-actions flex justify-end items-center gap-3 pt-5 mt-2 border-t">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="onCancel()"
+                class="btn-cancel min-w-[90px]"
+              >
+                Cancel
+              </button>
+              <button
+                mat-flat-button
+                type="submit"
+                class="btn-save min-w-[140px]"
+                [disabled]="form.invalid || ((loading$ | async) ?? false)"
+              >
+                <ng-container *ngIf="(loading$ | async) ?? false; else saveLabel">
+                  <mat-spinner diameter="18"></mat-spinner>
+                  <span>Saving...</span>
+                </ng-container>
+                <ng-template #saveLabel>
+                  <mat-icon>save</mat-icon>
+                  <span>Save Expense</span>
+                </ng-template>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Guidelines Card -->
+        <aside class="guidelines-card rounded-xl border px-6 py-5 sticky">
+          <div class="guidelines-header flex items-center gap-2 mb-4 pb-3 border-b">
+            <mat-icon>lightbulb_outline</mat-icon>
+            <h3 class="text-xs font-bold uppercase tracking-wider m-0">Expense Guidelines</h3>
+          </div>
+          <ul class="guidelines-list flex flex-col gap-2.5 list-none m-0 p-0">
+            <li class="flex items-start gap-2 text-sm leading-relaxed">
+              <mat-icon class="w-4 h-4 text-base flex-shrink-0 mt-0.5"
+                >check_circle_outline</mat-icon
+              >
+              <span>Enter accurate expense amounts</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm leading-relaxed">
+              <mat-icon class="w-4 h-4 text-base flex-shrink-0 mt-0.5"
+                >check_circle_outline</mat-icon
+              >
+              <span>Choose the correct category</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm leading-relaxed">
+              <mat-icon class="w-4 h-4 text-base flex-shrink-0 mt-0.5"
+                >check_circle_outline</mat-icon
+              >
+              <span>Add meaningful descriptions</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm leading-relaxed">
+              <mat-icon class="w-4 h-4 text-base flex-shrink-0 mt-0.5"
+                >check_circle_outline</mat-icon
+              >
+              <span>All required fields must be completed</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm leading-relaxed">
+              <mat-icon class="w-4 h-4 text-base flex-shrink-0 mt-0.5"
+                >check_circle_outline</mat-icon
+              >
+              <span>Review information before submission</span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>

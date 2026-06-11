@@ -1,0 +1,1011 @@
+/* ============================================
+   ENTERPRISE EXPENSE MANAGER - Dashboard
+   Design System: Modern Enterprise Ledger
+   ============================================ */
+
+/* === CSS Variables === */
+:host {
+  --primary: #493ee5;
+  --primary-container: #635bff;
+  --primary-hover: #321ed2;
+  --on-primary: #ffffff;
+  --surface: #fcf9f8;
+  --surface-bg: #f6f9fc;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f6f3f2;
+  --surface-container: #f0eded;
+  --on-surface: #1c1b1b;
+  --on-surface-variant: #464555;
+  --outline: #777587;
+  --outline-variant: #c7c4d8;
+  --border-subtle: #e6ebf1;
+  --error: #ba1a1a;
+  --success: #16a34a;
+  --secondary: #49607e;
+  --tertiary: #974100;
+
+  --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  --sidebar-width: 260px;
+  --header-height: 50px;
+
+  display: block;
+  min-height: 100vh;
+}
+
+/* === Dashboard Layout === */
+.dashboard-layout {
+  background-color: var(--surface-bg);
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--surface);
+  border-right: 1px solid var(--border-subtle);
+  padding: 24px 0;
+  z-index: 50;
+}
+
+.sidebar-header {
+  padding: 0 24px;
+  margin-bottom: 32px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-primary);
+}
+
+.logo-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.logo-text h1 {
+  font-family: var(--font-geist);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--on-surface);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.logo-text p {
+  font-family: var(--font-geist);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  padding: 0 8px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.nav-item mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.nav-item:hover {
+  background-color: var(--surface-container-low);
+}
+
+.nav-item.active {
+  background-color: var(--surface-container);
+  color: var(--primary);
+  font-weight: 500;
+  border-left-color: var(--primary);
+}
+
+/* nav-spacer removed - using Tailwind flex-1 */
+
+.logout-item {
+  color: var(--error);
+}
+
+.logout-item:hover {
+  background-color: rgba(186, 26, 26, 0.08);
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  flex: 1;
+}
+
+/* ============================================
+   TOP HEADER
+   ============================================ */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 12px 24px;
+  background-color: var(--surface-container-lowest);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  height: var(--header-height);
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--on-surface-variant);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 44px;
+  font-family: var(--font-inter);
+  font-size: 14px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--outline);
+}
+
+/* header-actions: using Tailwind flex items-center gap-2 */
+
+.notification-btn {
+  position: relative;
+  color: var(--on-surface-variant);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--error);
+  border-radius: 50%;
+  border: 2px solid var(--surface-container-lowest);
+}
+
+.header-divider {
+  width: 1px;
+  height: 32px;
+  background-color: var(--border-subtle);
+  margin: 0 8px;
+}
+
+/* user-profile: using Tailwind flex items-center gap-3 */
+/* user-info: using Tailwind text-right */
+
+.user-name {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.user-role {
+  font-family: var(--font-geist);
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--surface-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+}
+
+.user-avatar mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: var(--on-surface-variant);
+}
+
+/* ============================================
+   DASHBOARD CONTENT
+   ============================================ */
+.dashboard-content {
+  padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Page Header: using Tailwind flex justify-between flex-wrap gap-4 */
+
+.page-title {
+  font-family: var(--font-geist);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: -0.01em;
+  color: var(--on-surface);
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+/* page-actions: using Tailwind flex gap-2 flex-wrap */
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 500;
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  color: var(--on-surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: var(--surface-container-low);
+}
+
+.action-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.add-expense-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px !important;
+  font-family: var(--font-geist) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background-color: var(--primary-container) !important;
+  border-radius: var(--radius-lg) !important;
+  color: var(--on-primary) !important;
+}
+
+.add-expense-btn:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.add-expense-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================
+   METRICS GRID
+   ============================================ */
+/* metrics-grid: using Tailwind grid gap-4 */
+
+.metrics-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.metric-label {
+  font-family: var(--font-geist);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-family: var(--font-geist);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 36px;
+  color: var(--on-surface);
+  margin-top: 4px;
+}
+
+.metric-value-sm {
+  font-family: var(--font-geist);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--on-surface);
+  margin-top: 4px;
+}
+
+.metric-subtext {
+  font-family: var(--font-geist);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  margin-top: 2px;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* growth-indicator: using Tailwind flex items-center gap-2 */
+
+.growth-indicator.positive .metric-value,
+.growth-indicator.positive mat-icon {
+  color: var(--success);
+}
+
+.growth-indicator.negative .metric-value,
+.growth-indicator.negative mat-icon {
+  color: var(--error);
+}
+
+.growth-indicator mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================
+   MAIN GRID
+   ============================================ */
+/* main-grid: using Tailwind grid gap-6 */
+
+.main-grid {
+  grid-template-columns: 1fr 2fr;
+}
+
+/* Section Card */
+.section-card {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.section-title {
+  font-family: var(--font-geist);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--on-surface);
+  margin: 0 0 16px 0;
+}
+
+/* ============================================
+   CATEGORY SECTION
+   ============================================ */
+/* category-section: using Tailwind flex flex-col gap-4 */
+/* category-list: using Tailwind flex flex-col gap-4 */
+/* category-item: using Tailwind flex flex-col gap-2 */
+/* category-info: using Tailwind flex justify-between items-center */
+
+.category-name {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--on-surface);
+}
+
+.category-amount {
+  font-family: var(--font-geist);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.category-bar {
+  height: 8px;
+  background-color: var(--surface-container);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.category-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+
+.bar-color-0 {
+  background-color: var(--primary);
+}
+.bar-color-1 {
+  background-color: var(--secondary);
+}
+.bar-color-2 {
+  background-color: var(--tertiary);
+}
+.bar-color-3 {
+  background-color: var(--outline);
+}
+
+.view-report-btn {
+  width: 100%;
+  margin-top: 16px;
+  color: var(--primary) !important;
+  font-family: var(--font-inter) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* empty-category-state: using Tailwind flex flex-col items-center */
+
+.empty-category-state {
+  padding: 24px;
+  color: var(--on-surface-variant);
+}
+
+.empty-category-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+.empty-category-state p {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Monthly Summary */
+/* monthly-summary: using Tailwind flex flex-col gap-3 */
+/* summary-row: using Tailwind flex justify-between items-center */
+
+.summary-label {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  color: var(--on-surface-variant);
+}
+
+.summary-value {
+  font-family: var(--font-geist);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.summary-row.highlight {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.summary-value.positive {
+  color: var(--success);
+}
+
+.summary-value.negative {
+  color: var(--error);
+}
+
+/* ============================================
+   EXPENSES SECTION
+   ============================================ */
+/* expenses-section: using Tailwind flex flex-col */
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* table-header: using Tailwind flex justify-between items-center */
+
+.table-header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.table-header .section-title {
+  margin: 0;
+}
+
+.view-all-link {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.expenses-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expenses-table thead {
+  background-color: var(--surface-container-low);
+}
+
+.expenses-table th {
+  padding: 12px 24px;
+  font-family: var(--font-geist);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  text-align: left;
+}
+
+.expenses-table td {
+  padding: 16px 24px;
+  font-family: var(--font-inter);
+  font-size: 14px;
+  color: var(--on-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.expenses-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.expenses-table tbody tr:hover {
+  background-color: var(--surface-container-low);
+}
+
+.expenses-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.expense-description {
+  font-weight: 500;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expense-category {
+  color: var(--on-surface-variant);
+}
+
+.category-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: var(--surface-container);
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.expense-date {
+  color: var(--on-surface-variant);
+}
+
+.expense-amount {
+  font-family: var(--font-geist);
+  font-weight: 500;
+}
+
+/* text-right: using Tailwind text-right */
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+/* empty-state: using Tailwind flex flex-col items-center justify-center text-center */
+
+.empty-state {
+  padding: 48px 24px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  background-color: var(--surface-container);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.empty-state-icon mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--on-surface-variant);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-family: var(--font-geist);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--on-surface);
+  margin-bottom: 8px;
+}
+
+.empty-state-text {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  color: var(--on-surface-variant);
+  margin-bottom: 24px;
+}
+
+.empty-state-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px !important;
+  background-color: var(--primary-container) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.empty-state-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================
+   LOADING / SKELETON STATE
+   ============================================ */
+.metric-card.skeleton {
+  background-color: var(--surface-container-lowest);
+}
+
+.skeleton-label {
+  width: 80px;
+  height: 12px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-low) 50%,
+    var(--surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-value {
+  width: 120px;
+  height: 28px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-low) 50%,
+    var(--surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
+}
+
+.skeleton-card {
+  padding: 24px;
+}
+
+.skeleton-title {
+  width: 150px;
+  height: 20px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-low) 50%,
+    var(--surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.skeleton-bar {
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-low) 50%,
+    var(--surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.skeleton-row {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-low) 50%,
+    var(--surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Desktop Large */
+@media (min-width: 1400px) {
+  .metrics-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Desktop */
+@media (max-width: 1200px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .category-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .top-header {
+    padding: 12px 16px;
+  }
+
+  .search-wrapper {
+    display: none;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .dashboard-content {
+    padding: 12px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .page-actions {
+    flex-direction: column;
+  }
+
+  .action-btn,
+  .add-expense-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-value {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .section-card {
+    padding: 16px;
+  }
+
+  .table-header {
+    padding: 16px;
+  }
+
+  .expenses-table th,
+  .expenses-table td {
+    padding: 12px 16px;
+  }
+
+  .expense-description {
+    max-width: 120px;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .summary {
+    gap: var(--spacing-lg);
+  }
+
+  .stat-card {
+    padding: var(--spacing-lg);
+
+    .stat-value {
+      font-size: var(--font-size-2xl);
+    }
+  }
+
+  th,
+  td {
+    padding: var(--spacing-md) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .category-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .section h3 {
+    font-size: var(--font-size-xl);
+  }
+
+  table {
+    font-size: var(--font-size-sm);
+  }
+
+  .category-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,226 @@
+/* ============================================
+   DESIGN TOKENS - Enterprise Expense Tracker
+   Shared Design System Variables
+   ============================================ */
+
+/* 
+ * Usage: @import 'styles/design-tokens';
+ * Then reference tokens as: var(--primary)
+ */
+
+:root {
+  /* ============================================
+     COLOR SYSTEM
+     ============================================ */
+  
+  /* Primary Colors */
+  --primary: #493ee5;
+  --primary-container: #635bff;
+  --primary-hover: #3d32c9;
+  --primary-active: #321ed2;
+  --on-primary: #ffffff;
+  
+  /* Surface Colors */
+  --surface: #fcf9f8;
+  --surface-bg: #f6f9fc;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f6f3f2;
+  --surface-container: #f0eded;
+  --surface-bright: #fcf9f8;
+  
+  /* Text Colors */
+  --on-surface: #1c1b1b;
+  --on-surface-variant: #464555;
+  
+  /* Border Colors */
+  --outline: #777587;
+  --outline-variant: #c7c4d8;
+  --border-subtle: #e6ebf1;
+  
+  /* State Colors */
+  --error: #ba1a1a;
+  --error-container: rgba(186, 26, 26, 0.08);
+  --on-error-container: #ba1a1a;
+  
+  --success: #16a34a;
+  --success-container: rgba(22, 163, 74, 0.08);
+  --on-success-container: #16a34a;
+  
+  --warning: #f59e0b;
+  --warning-container: rgba(245, 158, 11, 0.08);
+  --on-warning-container: #f59e0b;
+  
+  --info: #3b82f6;
+  --info-container: rgba(59, 130, 246, 0.08);
+  --on-info-container: #3b82f6;
+  
+  /* Secondary Colors */
+  --secondary: #49607e;
+  --tertiary: #974100;
+  
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  
+  /* Font Families */
+  --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* ============================================
+     SPACING SYSTEM (8px base)
+     ============================================ */
+  
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+  
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+  
+  --radius-xs: 0.125rem;   /* 2px */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;   /* Fully rounded */
+  
+  /* ============================================
+     ELEVATION / SHADOWS
+     ============================================ */
+  
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Component-specific shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 4px 12px rgba(99, 91, 255, 0.15);
+  --shadow-focus: 0 0 0 3px rgba(99, 91, 255, 0.2);
+  
+  /* ============================================
+     TRANSITIONS
+     ============================================ */
+  
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Easing Functions */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ============================================
+     Z-INDEX LAYERS
+     ============================================ */
+  
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-navbar: 1030;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  
+  /* ============================================
+     LAYOUT
+     ============================================ */
+  
+  --sidebar-width: 260px;
+  --header-height: 50px;
+  --container-max-width: 1280px;
+  
+  /* ============================================
+     BREAKPOINTS (for reference in JS)
+     ============================================ */
+  
+  --breakpoint-sm: 481px;
+  --breakpoint-md: 769px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* ============================================
+   UTILITY MIXINS (SCSS only)
+   ============================================ */
+
+/* Responsive Breakpoints */
+@mixin mobile {
+  @media (max-width: 480px) { @content; }
+}
+
+@mixin tablet {
+  @media (min-width: 481px) and (max-width: 768px) { @content; }
+}
+
+@mixin desktop {
+  @media (min-width: 769px) { @content; }
+}
+
+@mixin large-desktop {
+  @media (min-width: 1024px) { @content; }
+}
+
+/* Focus Visible */
+@mixin focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Truncate Text */
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Flexbox Center */
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Base */
+@mixin card {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-card);
+}
