@@ -1,6 +1,6 @@
 export const environment = {
-    production:false,
-    apiBaseUrl:"http://api.myapp.com"
+    production:true,
+    apiBaseUrl:"https://expense-tracker-backend-b9c7.onrender.com"
 }
 
 // -----------THIS APP IS USED BY REAL USERS------------

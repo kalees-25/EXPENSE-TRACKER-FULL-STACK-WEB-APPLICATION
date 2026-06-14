@@ -1,7 +1,5 @@
 //  Methods provided by the parent component and accessed inside the renderer component.
 
-
-
 import {Expense} from './expense.model';
 
 import { ICellRendererParams } from 'ag-grid-community';
