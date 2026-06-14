@@ -63,8 +63,8 @@ testem.log
 
 node_modules/
 sweetalert2/
-package.json
-package-lock.json
+# package.json
+# package-lock.json
 LOGIN_COMPONENT_IMPROVEMENTS.md
 UI-DESIGN-SYSTEM.md
 EXPENSE-TRACKER-PROJECT-REVIEW-GUIDE.md
